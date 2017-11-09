@@ -1540,7 +1540,7 @@ namespace ts {
     export interface PropertyAccessExpression extends MemberExpression, NamedDeclaration {
         kind: SyntaxKind.PropertyAccessExpression;
         expression: LeftHandSideExpression;
-        name: Identifier;
+        name: Identifier | undefined;
     }
 
     export interface SuperPropertyAccessExpression extends PropertyAccessExpression {
@@ -2002,7 +2002,7 @@ namespace ts {
 
     export interface JSDocNamespaceDeclaration extends ModuleDeclaration {
         name: Identifier;
-        body: JSDocNamespaceBody;
+        body: JSDocNamespaceBody | undefined;
     }
 
     export interface ModuleBlock extends Node, Statement {
@@ -2220,12 +2220,12 @@ namespace ts {
 
     export interface JSDocReturnTag extends JSDocTag {
         kind: SyntaxKind.JSDocReturnTag;
-        typeExpression: JSDocTypeExpression;
+        typeExpression: JSDocTypeExpression | undefined;
     }
 
     export interface JSDocTypeTag extends JSDocTag {
         kind: SyntaxKind.JSDocTypeTag;
-        typeExpression: JSDocTypeExpression;
+        typeExpression: JSDocTypeExpression | undefined;
     }
 
     export interface JSDocTypedefTag extends JSDocTag, NamedDeclaration {
@@ -2307,7 +2307,7 @@ namespace ts {
 
     // FlowLabel represents a junction with multiple possible preceding control flows.
     export interface FlowLabel extends FlowNodeBase {
-        antecedents: FlowNode[];
+        antecedents: FlowNode[] | undefined;
     }
 
     // FlowAssignment represents a node that assigns a value to a narrowable reference,
@@ -4476,7 +4476,7 @@ namespace ts {
         resumeLexicalEnvironment(): void;
 
         /** Ends a lexical environment, returning any declarations. */
-        endLexicalEnvironment(): Statement[];
+        endLexicalEnvironment(): Statement[] | undefined;
 
         /** Hoists a function declaration to the containing scope. */
         hoistFunctionDeclaration(node: FunctionDeclaration): void;
