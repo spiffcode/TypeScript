@@ -1059,12 +1059,12 @@ namespace ts {
                     errors.push(createDiagnosticForNodeInSourceFile(sourceFile, element.name, Diagnostics.String_literal_with_double_quotes_expected));
                 }
 
-                const keyText = unescapeLeadingUnderscores(getTextOfPropertyName(element.name)!); //iffy
+                const keyText = unescapeLeadingUnderscores(getTextOfPropertyName(element.name)!); // TODO: GH#18217
                 const option = knownOptions ? knownOptions.get(keyText) : undefined;
                 if (extraKeyDiagnosticMessage && !option) {
                     errors.push(createDiagnosticForNodeInSourceFile(sourceFile, element.name, extraKeyDiagnosticMessage, keyText));
                 }
-                const value = convertPropertyValueToJson(element.initializer!, option); //iffy
+                const value = convertPropertyValueToJson(element.initializer!, option); // TODO: GH#18217
                 if (typeof keyText !== "undefined") {
                     result[keyText] = value;
                     // Notify key value set, if user asked for it
@@ -1269,7 +1269,7 @@ namespace ts {
                         }
                         else {
                             if (optionDefinition.type === "list") {
-                                result.set(name, (value as ReadonlyArray<string | number>).map(element => getNameOfCompilerOptionValue(element, customTypeMap)!)); //fishy
+                                result.set(name, (value as ReadonlyArray<string | number>).map(element => getNameOfCompilerOptionValue(element, customTypeMap)!)); // TODO: GH#18217
                             }
                             else {
                                 // There is a typeMap associated with this command-line option so use it to map value back to its name
@@ -1375,7 +1375,7 @@ namespace ts {
      *    file to. e.g. outDir
      */
     export function parseJsonConfigFileContent(json: any, host: ParseConfigHost, basePath: string, existingOptions?: CompilerOptions, configFileName?: string, resolutionStack?: Path[], extraFileExtensions?: ReadonlyArray<JsFileExtensionInfo>): ParsedCommandLine {
-        return parseJsonConfigFileContentWorker(json, /*sourceFile*/ undefined!, host, basePath, existingOptions, configFileName, resolutionStack, extraFileExtensions); //super fishy
+        return parseJsonConfigFileContentWorker(json, /*sourceFile*/ undefined!, host, basePath, existingOptions, configFileName, resolutionStack, extraFileExtensions); // TODO: GH#18217
     }
 
     /**
@@ -1755,13 +1755,10 @@ namespace ts {
 
     function convertCompileOnSaveOptionFromJson(jsonOption: any, basePath: string, errors: Push<Diagnostic>): boolean {
         if (!hasProperty(jsonOption, compileOnSaveCommandLineOption.name)) {
-            return undefined!; //fishy
+            return false;
         }
         const result = convertJsonOption(compileOnSaveCommandLineOption, jsonOption.compileOnSave, basePath, errors);
-        if (typeof result === "boolean" && result) {
-            return result;
-        }
-        return false;
+        return typeof result === "boolean" && result;
     }
 
     export function convertCompilerOptionsFromJson(jsonOptions: any, basePath: string, configFileName?: string): { options: CompilerOptions, errors: Diagnostic[] } {
@@ -2281,7 +2278,7 @@ namespace ts {
                     if (optionEnumValue === value) {
                         return optionStringValue;
                     }
-                })!; //fishy
+                })!; // TODO: GH#18217
         }
     }
 }

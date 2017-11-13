@@ -309,7 +309,7 @@ namespace ts {
         markerSubType.constraint = markerSuperType;
         const markerOtherType = <TypeParameter>createType(TypeFlags.TypeParameter);
 
-        //fishy: declaration is non-optional...
+        // TODO: GH#18217 First parameter eclaration is not optional!
         const anySignature = createSignature(undefined!, undefined, undefined, emptyArray, anyType, /*typePredicate*/ undefined, 0, /*hasRestParameter*/ false, /*hasLiteralTypes*/ false);
         const unknownSignature = createSignature(undefined!, undefined, undefined, emptyArray, unknownType, /*typePredicate*/ undefined, 0, /*hasRestParameter*/ false, /*hasLiteralTypes*/ false);
         const resolvingSignature = createSignature(undefined!, undefined, undefined, emptyArray, anyType, /*typePredicate*/ undefined, 0, /*hasRestParameter*/ false, /*hasLiteralTypes*/ false);
@@ -1175,7 +1175,7 @@ namespace ts {
             if (!result) {
                 if (nameNotFoundMessage) {
                     if (!errorLocation ||
-                        !checkAndReportErrorForMissingPrefix(errorLocation, name, nameArg!) && //fishy
+                        !checkAndReportErrorForMissingPrefix(errorLocation, name, nameArg!) && // TODO: GH#18217
                         !checkAndReportErrorForExtendingInterface(errorLocation) &&
                         !checkAndReportErrorForUsingTypeAsNamespace(errorLocation, name, meaning) &&
                         !checkAndReportErrorForUsingTypeAsValue(errorLocation, name, meaning) &&
@@ -1231,7 +1231,7 @@ namespace ts {
                 if (result && isInExternalModule && (meaning & SymbolFlags.Value) === SymbolFlags.Value) {
                     const decls = result.declarations;
                     if (decls && decls.length === 1 && decls[0].kind === SyntaxKind.NamespaceExportDeclaration) {
-                        error(errorLocation!, Diagnostics._0_refers_to_a_UMD_global_but_the_current_file_is_a_module_Consider_adding_an_import_instead, unescapeLeadingUnderscores(name)); //fishy
+                        error(errorLocation!, Diagnostics._0_refers_to_a_UMD_global_but_the_current_file_is_a_module_Consider_adding_an_import_instead, unescapeLeadingUnderscores(name)); // TODO: GH#18217
                     }
                 }
             }
@@ -1276,7 +1276,7 @@ namespace ts {
                     // No static member is present.
                     // Check if we're in an instance method and look for a relevant instance member.
                     if (location === container && !hasModifier(location, ModifierFlags.Static)) {
-                        const instanceType = (<InterfaceType>getDeclaredTypeOfSymbol(classSymbol)).thisType!; //fishy
+                        const instanceType = (<InterfaceType>getDeclaredTypeOfSymbol(classSymbol)).thisType!; // TODO: GH#18217
                         if (getPropertyOfType(instanceType, name)) {
                             error(errorLocation, Diagnostics.Cannot_find_name_0_Did_you_mean_the_instance_member_this_0, diagnosticName(nameArg));
                             return true;
@@ -1392,7 +1392,7 @@ namespace ts {
                     error(errorLocation, Diagnostics.Class_0_used_before_its_declaration, declarationNameToString(getNameOfDeclaration(declaration!)!));
                 }
                 else if (result.flags & SymbolFlags.RegularEnum) {
-                    error(errorLocation, Diagnostics.Enum_0_used_before_its_declaration, declarationNameToString(getNameOfDeclaration(declaration!)!)); //fishy
+                    error(errorLocation, Diagnostics.Enum_0_used_before_its_declaration, declarationNameToString(getNameOfDeclaration(declaration!)!)); // TODO: GH#18217
                 }
             }
         }
@@ -1505,7 +1505,7 @@ namespace ts {
             if (symbol.flags & SymbolFlags.Variable) {
                 const typeAnnotation = (<VariableDeclaration>symbol.valueDeclaration).type;
                 if (typeAnnotation) {
-                    return resolveSymbol(getPropertyOfType(getTypeFromTypeNode(typeAnnotation), name)); //fishy
+                    return resolveSymbol(getPropertyOfType(getTypeFromTypeNode(typeAnnotation), name)); // TODO: GH#18217
                 }
             }
         }
@@ -1804,7 +1804,7 @@ namespace ts {
             if (resolvedModule && !extensionIsTypeScript(resolvedModule.extension) && resolutionDiagnostic === undefined || resolutionDiagnostic === Diagnostics.Could_not_find_a_declaration_file_for_module_0_1_implicitly_has_an_any_type) {
                 if (isForAugmentation) {
                     const diag = Diagnostics.Invalid_module_name_in_augmentation_Module_0_resolves_to_an_untyped_module_at_1_which_cannot_be_augmented;
-                    error(errorNode, diag, moduleReference, resolvedModule!.resolvedFileName); //fishy
+                    error(errorNode, diag, moduleReference, resolvedModule!.resolvedFileName); // TODO: GH#18217
                 }
                 else if (noImplicitAny && moduleNotFoundError) {
                     let errorInfo = !resolvedModule!.isExternalLibraryImport ? undefined : chainDiagnosticMessages(/*details*/ undefined,
@@ -2591,11 +2591,11 @@ namespace ts {
                 }
                 if (type.flags & TypeFlags.Index) {
                     const indexedType = (<IndexType>type).type;
-                    const indexTypeNode = typeToTypeNodeHelper(indexedType, context)!; //fishy
+                    const indexTypeNode = typeToTypeNodeHelper(indexedType, context)!; // TODO: GH#18217
                     return createTypeOperatorNode(indexTypeNode);
                 }
                 if (type.flags & TypeFlags.IndexedAccess) {
-                    const objectTypeNode = typeToTypeNodeHelper((<IndexedAccessType>type).objectType, context)!; //fishy
+                    const objectTypeNode = typeToTypeNodeHelper((<IndexedAccessType>type).objectType, context)!; // TODO: GH#18217
                     const indexTypeNode = typeToTypeNodeHelper((<IndexedAccessType>type).indexType, context)!;
                     return createIndexedAccessTypeNode(objectTypeNode, indexTypeNode);
                 }
@@ -2757,7 +2757,7 @@ namespace ts {
                                     if (qualifiedName) {
                                         Debug.assert(!qualifiedName.right);
                                         qualifiedName = addToQualifiedNameMissingRightIdentifier(qualifiedName, namePart);
-                                        qualifiedName = createQualifiedName(qualifiedName, /*right*/ undefined!); //fishy
+                                        qualifiedName = createQualifiedName(qualifiedName, /*right*/ undefined!); // TODO: GH#18217
                                     }
                                     else {
                                         qualifiedName = createQualifiedName(namePart, /*right*/ undefined!);
@@ -3286,7 +3286,7 @@ namespace ts {
                 const isTypeParameter = symbol.flags & SymbolFlags.TypeParameter;
                 const typeFormatFlag = TypeFormatFlags.UseFullyQualifiedType & typeFlags!;
                 if (!isTypeParameter && (enclosingDeclaration || typeFormatFlag)) {
-                    walkSymbol(symbol, meaning!, /*endOfChain*/ true); //fishy
+                    walkSymbol(symbol, meaning!, /*endOfChain*/ true); // TODO: GH#18217
                 }
                 else {
                     appendParentTypeArgumentsAndSymbolName(symbol);
@@ -4178,7 +4178,7 @@ namespace ts {
             const members = createSymbolTable();
             const names = createUnderscoreEscapedMap<true>();
             for (const name of properties) {
-                names.set(getTextOfPropertyName(name)!, true); //fishy
+                names.set(getTextOfPropertyName(name)!, true); // TODO: GH#18217
             }
             for (const prop of getPropertiesOfType(source)) {
                 const inNamesToRemove = names.has(prop.escapedName);
@@ -4236,7 +4236,7 @@ namespace ts {
 
                     // Use type of the specified property, or otherwise, for a numeric name, the type of the numeric index signature,
                     // or otherwise the type of the string index signature.
-                    const text = getTextOfPropertyName(name)!;//fishy
+                    const text = getTextOfPropertyName(name)!; // TODO: GH#18217
 
                     const declaredType = getTypeOfPropertyOfType(parentType, text);
                     type = declaredType && getFlowTypeOfReference(declaration, declaredType) ||
@@ -4483,7 +4483,7 @@ namespace ts {
                     return;
                 }
 
-                const text = getTextOfPropertyName(name)!; //fishy
+                const text = getTextOfPropertyName(name)!; // TODO: GH#18217
                 const flags = SymbolFlags.Property | (e.initializer ? SymbolFlags.Optional : 0);
                 const symbol = createSymbol(flags, text);
                 symbol.type = getTypeFromBindingElement(e, includePatternInType, reportErrors);
@@ -4824,7 +4824,7 @@ namespace ts {
             return getObjectFlags(type) & ObjectFlags.Reference ? (<TypeReference>type).target : type;
         }
 
-        //TODO: if `checkBase` is undefined we should just return `false` early
+        // TODO: GH#18217 If `checkBase` is undefined, we should not call this because this will always return false.
         function hasBaseType(type: Type, checkBase: Type | undefined) {
             return check(type);
             function check(type: Type): boolean {
@@ -4853,7 +4853,7 @@ namespace ts {
         // Return the outer type parameters of a node or undefined if the node has no outer type parameters.
         function getOuterTypeParameters(node: Node, includeThisTypes?: boolean): TypeParameter[] | undefined {
             while (true) {
-                node = node.parent!; //use SourceFile kind check instead
+                node = node.parent!; // TODO: GH#18217 Use SourceFile kind check instead
                 if (!node) {
                     return undefined;
                 }
@@ -5072,7 +5072,7 @@ namespace ts {
             type.resolvedBaseTypes = [baseType];
         }
 
-        function areAllOuterTypeParametersApplied(type: Type): boolean {//shouldn't this take an InterfaceType?
+        function areAllOuterTypeParametersApplied(type: Type): boolean { // TODO: GH#18217 Shouldn't this take an InterfaceType?
             // An unapplied type parameter has its symbol still the same as the matching argument symbol.
             // Since parameters are applied outer-to-inner, only the last outer parameter needs to be checked.
             const outerTypeParameters = (<InterfaceType>type).outerTypeParameters;
@@ -5264,7 +5264,7 @@ namespace ts {
                 for (const declaration of symbol.declarations!) {
                     if (declaration.kind === SyntaxKind.EnumDeclaration) {
                         for (const member of (<EnumDeclaration>declaration).members) {
-                            const memberType = getLiteralType(getEnumMemberValue(member)!, enumCount, getSymbolOfNode(member)); //fishy
+                            const memberType = getLiteralType(getEnumMemberValue(member)!, enumCount, getSymbolOfNode(member)); // TODO: GH#18217
                             getSymbolLinks(getSymbolOfNode(member)!).declaredType = memberType;
                             memberTypeList.push(memberType);
                         }
@@ -5458,7 +5458,7 @@ namespace ts {
                 const target = (<TypeReference>type).target;
                 const typeArguments = (<TypeReference>type).typeArguments;
                 if (length(target.typeParameters) === length(typeArguments)) {
-                    return createTypeReference(target, concatenate(typeArguments, [thisArgument || target.thisType!])); //fishy
+                    return createTypeReference(target, concatenate(typeArguments, [thisArgument || target.thisType!])); // TODO: GH#18217
                 }
             }
             else if (type.flags & TypeFlags.Intersection) {
@@ -5548,7 +5548,7 @@ namespace ts {
             const baseConstructorType = getBaseConstructorTypeOfClass(classType);
             const baseSignatures = getSignaturesOfType(baseConstructorType, SignatureKind.Construct);
             if (baseSignatures.length === 0) {
-                return [createSignature(undefined!, classType.localTypeParameters, undefined, emptyArray, classType, /*typePredicate*/ undefined, 0, /*hasRestParameter*/ false, /*hasLiteralTypes*/ false)]; //fishy
+                return [createSignature(undefined!, classType.localTypeParameters, undefined, emptyArray, classType, /*typePredicate*/ undefined, 0, /*hasRestParameter*/ false, /*hasLiteralTypes*/ false)]; // TODO: GH#18217
             }
             const baseTypeNode = getBaseTypeNodeOfClass(classType)!;
             const isJavaScript = isInJavaScriptFile(baseTypeNode);
@@ -5569,7 +5569,6 @@ namespace ts {
         }
 
         function findMatchingSignature(signatureList: Signature[], signature: Signature, partialMatch: boolean, ignoreThisTypes: boolean, ignoreReturnTypes: boolean): Signature | undefined {
-            //use 'find'
             for (const s of signatureList) {
                 if (compareSignaturesIdentical(s, signature, partialMatch, ignoreThisTypes, ignoreReturnTypes, compareTypesIdentical)) {
                     return s;
@@ -5621,7 +5620,7 @@ namespace ts {
                             if (unionSignatures.length > 1) {
                                 s = cloneSignature(signature);
                                 if (forEach(unionSignatures, sig => sig.thisParameter)) {
-                                    //super fishy -- we tested that *some* has thisParameter and now act as if *all* do!
+                                    // TODO: GH#18217 We tested that *some* has thisParameter and now act as if *all* do!
                                     const thisType = getUnionType(map(unionSignatures, sig => getTypeOfSymbol(sig.thisParameter!) || anyType), /*subtypeReduction*/ true);
                                     s.thisParameter = createSymbolWithType(signature.thisParameter!, thisType);
                                 }
@@ -5998,7 +5997,7 @@ namespace ts {
             for (const memberType of types) {
                 for (const { escapedName } of getPropertiesOfType(memberType)) {
                     if (!props.has(escapedName)) {
-                        props.set(escapedName, createUnionOrIntersectionProperty(unionType as UnionType, escapedName)!); //fishy
+                        props.set(escapedName, createUnionOrIntersectionProperty(unionType as UnionType, escapedName)!); // TODO: GH#18217
                     }
                 }
             }
@@ -6508,7 +6507,7 @@ namespace ts {
                         const resolvedSymbol = resolveName(param, paramSymbol.escapedName, SymbolFlags.Value, undefined, undefined, /*isUse*/ false);
                         paramSymbol = resolvedSymbol;
                     }
-                    if (i === 0 && paramSymbol!.escapedName === "this") { //fishy
+                    if (i === 0 && paramSymbol!.escapedName === "this") { // TODO: GH#18217
                         hasThisParameter = true;
                         thisParameter = param.symbol;
                     }
@@ -8191,7 +8190,7 @@ namespace ts {
                 case SyntaxKind.Identifier:
                 case SyntaxKind.QualifiedName:
                     const symbol = getSymbolAtLocation(node);
-                    return (symbol && getDeclaredTypeOfSymbol(symbol))!; //super duper fishy
+                    return (symbol && getDeclaredTypeOfSymbol(symbol))!; // TODO: GH#18217
                 case SyntaxKind.JSDocVariadicType:
                     return getTypeFromJSDocVariadicType(<JSDocVariadicType>node);
                 default:
@@ -8726,7 +8725,7 @@ namespace ts {
                 const callbacks = sourceSig && targetSig && !sourceSig.typePredicate && !targetSig.typePredicate &&
                     (getFalsyFlags(sourceType) & TypeFlags.Nullable) === (getFalsyFlags(targetType) & TypeFlags.Nullable);
                 const related = callbacks ?
-                    //it will work if they're both `undefined`...
+                    // TODO: GH#18217 It will work if they're both `undefined`, but not if only one is
                     compareSignaturesRelated(targetSig!, sourceSig!, strictVariance ? CallbackCheck.Strict : CallbackCheck.Bivariant, /*ignoreReturnTypes*/ false, reportErrors, errorReporter, compareTypes) :
                     !callbackCheck && !strictVariance && compareTypes(sourceType, targetType, /*reportErrors*/ false) || compareTypes(targetType, sourceType, reportErrors);
                 if (!related) {
@@ -9003,7 +9002,7 @@ namespace ts {
                     errorInfo = concatenateDiagnosticMessageChains(containingMessageChain, errorInfo);
                 }
 
-                diagnostics.add(createDiagnosticForNodeFromMessageChain(errorNode!, errorInfo)); //fishy
+                diagnostics.add(createDiagnosticForNodeFromMessageChain(errorNode!, errorInfo)); // TODO: GH#18217
             }
             return result !== Ternary.False;
 
@@ -9958,7 +9957,7 @@ namespace ts {
                 if (isGenericMappedType(source)) {
                     // A generic mapped type { [P in K]: T } is related to an index signature { [x: string]: U }
                     // if T is related to U.
-                    return (kind === IndexKind.String) as any as Ternary && isRelatedTo(getTemplateTypeFromMappedType(<MappedType>source), targetInfo.type, reportErrors); //fishy
+                    return (kind === IndexKind.String) as any as Ternary && isRelatedTo(getTemplateTypeFromMappedType(<MappedType>source), targetInfo.type, reportErrors); // TODO: GH#18217
                 }
                 if (isObjectTypeWithInferableIndex(source)) {
                     let related = Ternary.True;
@@ -10822,7 +10821,7 @@ namespace ts {
         // an object type with the same set of properties as the source type, where the type of each
         // property is computed by inferring from the source property type to X for the type
         // variable T[P] (i.e. we treat the type T[P] as the type variable we're inferring for).
-        function inferTypeForHomomorphicMappedType(source: Type, target: MappedType): Type |undefined {
+        function inferTypeForHomomorphicMappedType(source: Type, target: MappedType): Type | undefined {
             const properties = getPropertiesOfType(source);
             let indexInfo = getIndexInfoOfType(source, IndexKind.String);
             if (properties.length === 0 && !indexInfo) {
@@ -11590,7 +11589,7 @@ namespace ts {
         }
 
         function getTypeOfDestructuredProperty(type: Type, name: PropertyName) {
-            const text = getTextOfPropertyName(name)!; //fishy
+            const text = getTextOfPropertyName(name)!; // TODO: GH#18217
             return getTypeOfPropertyOfType(type, text) ||
                 isNumericLiteralName(text) && getIndexTypeOfType(type, IndexKind.Number) ||
                 getIndexTypeOfType(type, IndexKind.String) ||
@@ -11821,7 +11820,7 @@ namespace ts {
                     }
                 }
             }
-            return mappedTypes ? getUnionType(mappedTypes) : mappedType!; //fishy
+            return mappedTypes ? getUnionType(mappedTypes) : mappedType!; // TODO: GH#18217
         }
 
         function extractTypesOfKind(type: Type, kind: TypeFlags) {
@@ -13738,7 +13737,7 @@ namespace ts {
                 if (!prop.symbol) continue;
                 if (prop.kind !== SyntaxKind.PropertyAssignment) continue;
                 if (isDiscriminantProperty(contextualType, prop.symbol!.escapedName)) {
-                    const discriminatingType = getTypeOfNode(prop.initializer!)!; //fishy
+                    const discriminatingType = getTypeOfNode(prop.initializer!)!; // TODO: GH#18217
                     for (const type of (contextualType as UnionType).types) {
                         const targetType = getTypeOfPropertyOfType(type, prop.symbol!.escapedName);
                         if (targetType && checkTypeAssignableTo(discriminatingType, targetType, /*errorNode*/ undefined)) {
@@ -14681,7 +14680,7 @@ namespace ts {
          * @param elemInstanceType an element instance type (the result of newing or invoking this tag)
          * @param elementClassType a JSX-ElementClass type. This is a result of looking up ElementClass interface in the JSX global
          */
-        function tryGetAllJsxStatelessFunctionAttributesType(openingLikeElement: JsxOpeningLikeElement, elementType: Type, elemInstanceType: Type, elementClassType?: Type): Type | undefined{
+        function tryGetAllJsxStatelessFunctionAttributesType(openingLikeElement: JsxOpeningLikeElement, elementType: Type, elemInstanceType: Type, elementClassType?: Type): Type | undefined {
             Debug.assert(!(elementType.flags & TypeFlags.Union));
             if (!elementClassType || !isTypeAssignableTo(elemInstanceType, elementClassType)) {
                 // Is this is a stateless function component? See if its single signature's return type is assignable to the JSX Element Type
@@ -14694,7 +14693,7 @@ namespace ts {
                     let allMatchingAttributesType: Type | undefined;
                     for (const candidate of candidatesOutArray) {
                         const callReturnType = getReturnTypeOfSignature(candidate);
-                        //fishy: callReturnType should always be defined
+                        // TODO: GH#18217: callReturnType should always be defined...
                         let paramType: Type | undefined = callReturnType && (candidate.parameters.length === 0 ? emptyObjectType : getTypeOfSymbol(candidate.parameters[0]));
                         paramType = getApparentTypeOfJsxPropsType(paramType);
                         if (callReturnType && isTypeAssignableTo(callReturnType, jsxStatelessElementType)) {
@@ -14702,7 +14701,7 @@ namespace ts {
                             for (const attribute of openingLikeElement.attributes.properties) {
                                 if (isJsxAttribute(attribute) &&
                                     isUnhyphenatedJsxName(attribute.name.escapedText) &&
-                                    !getPropertyOfType(paramType!, attribute.name.escapedText)) { //fishy
+                                    !getPropertyOfType(paramType!, attribute.name.escapedText)) { // TODO: GH#18217
                                     shouldBeCandidate = false;
                                     break;
                                 }
@@ -15069,7 +15068,7 @@ namespace ts {
             // If the targetAttributesType is an emptyObjectType, indicating that there is no property named 'props' on this instance type.
             // but there exists a sourceAttributesType, we need to explicitly give an error as normal assignability check allow excess properties and will pass.
             if (targetAttributesType === emptyObjectType && (isTypeAny(sourceAttributesType) || (<ResolvedType>sourceAttributesType).properties.length > 0)) {
-                error(openingLikeElement, Diagnostics.JSX_element_class_does_not_support_attributes_because_it_does_not_have_a_0_property, unescapeLeadingUnderscores(getJsxElementPropertiesName()!)); //fishy
+                error(openingLikeElement, Diagnostics.JSX_element_class_does_not_support_attributes_because_it_does_not_have_a_0_property, unescapeLeadingUnderscores(getJsxElementPropertiesName()!)); // TODO: GH#18217
             }
             else {
                 // Check if sourceAttributesType assignable to targetAttributesType though this check will allow excess properties
@@ -15209,7 +15208,7 @@ namespace ts {
             }
              if (type.flags & TypeFlags.TypeParameter) {
                 // get the original type -- represented as the type constraint of the 'this' type
-                type = (type as TypeParameter).isThisType ? getConstraintOfTypeParameter(<TypeParameter>type)! : getBaseConstraintOfType(<TypeParameter>type)!; //fishy -- use a different variable?
+                type = (type as TypeParameter).isThisType ? getConstraintOfTypeParameter(<TypeParameter>type)! : getBaseConstraintOfType(<TypeParameter>type)!; // TODO: GH#18217 Use a different variable that's allowed to be undefined
             }
             if (!type || !hasBaseType(type, enclosingClass)) {
                 error(errorNode, Diagnostics.Property_0_is_protected_and_only_accessible_through_an_instance_of_class_1, symbolToString(prop), typeToString(enclosingClass));
@@ -16084,7 +16083,7 @@ namespace ts {
         function getEffectiveCallArguments(node: CallLikeExpression): ReadonlyArray<Expression> | undefined {
             if (node.kind === SyntaxKind.TaggedTemplateExpression) {
                 const template = (<TaggedTemplateExpression>node).template;
-                const args: Expression[] = [undefined!]; //super fishy
+                const args: Expression[] = [undefined!]; // TODO: GH#18217
                 if (template.kind === SyntaxKind.TemplateExpression) {
                     forEach((<TemplateExpression>template).templateSpans, span => {
                         args.push(span.expression);
@@ -16307,7 +16306,7 @@ namespace ts {
                 node.kind === SyntaxKind.SetAccessor) {
                 // The `descriptor` for a method decorator will be a `TypedPropertyDescriptor<T>`
                 // for the type of the member.
-                const propertyType = getTypeOfNode(node)!; //fishy
+                const propertyType = getTypeOfNode(node)!; // TODO: GH#18217
                 return createTypedPropertyDescriptorType(propertyType);
             }
 
@@ -16556,7 +16555,7 @@ namespace ts {
 
                 const { typeParameters } = candidate;
                 if (typeParameters && callLikeExpressionMayHaveTypeArguments(node) && node.typeArguments) {
-                    const typeArguments = node.typeArguments.map(getTypeOfNode) as Type[]; //fishy
+                    const typeArguments = node.typeArguments.map(getTypeOfNode) as Type[]; // TODO: GH#18217
                     while (typeArguments.length > typeParameters.length) {
                         typeArguments.pop();
                     }
@@ -16923,7 +16922,7 @@ namespace ts {
 
             const headMessage = getDiagnosticHeadMessageForDecoratorResolution(node);
             if (!callSignatures.length) {
-                let errorInfo = chainDiagnosticMessages(undefined, Diagnostics.Cannot_invoke_an_expression_whose_type_lacks_a_call_signature_Type_0_has_no_compatible_call_signatures, typeToString(apparentType));
+                let errorInfo = chainDiagnosticMessages(/*details*/ undefined, Diagnostics.Cannot_invoke_an_expression_whose_type_lacks_a_call_signature_Type_0_has_no_compatible_call_signatures, typeToString(apparentType));
                 errorInfo = chainDiagnosticMessages(errorInfo, headMessage);
                 diagnostics.add(createDiagnosticForNodeFromMessageChain(node, errorInfo));
                 return resolveErrorCall(node);
@@ -17974,7 +17973,7 @@ namespace ts {
                     return undefined;
                 }
 
-                const text = getTextOfPropertyName(name)!; //fishy
+                const text = getTextOfPropertyName(name)!; // TODO: GH#18217
                 const type = isTypeAny(objectLiteralType)
                     ? objectLiteralType
                     : getTypeOfPropertyOfType(objectLiteralType, text) ||
@@ -18457,7 +18456,7 @@ namespace ts {
                         if (nodeIsYieldStar) {
                             checkTypeAssignableTo(
                                 functionFlags & FunctionFlags.Async
-                                    //fishy --getAwaitedType may return undefined
+                                    // TODO: GH#18217 getAwaitedType may return undefined
                                     ? getAwaitedType(expressionElementType!, node.expression, Diagnostics.Type_of_iterated_elements_of_a_yield_Asterisk_operand_must_either_be_a_valid_promise_or_must_not_contain_a_callable_then_member)!
                                     : expressionElementType!,
                                 signatureElementType,
@@ -18881,7 +18880,7 @@ namespace ts {
                     else {
                         const leadingError = chainDiagnosticMessages(/*details*/ undefined, Diagnostics.A_type_predicate_s_type_must_be_assignable_to_its_parameter_s_type);
                         checkTypeAssignableTo(typePredicate.type,
-                            getTypeOfNode(parent.parameters[typePredicate.parameterIndex])!, //fishy
+                            getTypeOfNode(parent.parameters[typePredicate.parameterIndex])!, // TODO: GH#18217
                             node.type,
                             /*headMessage*/ undefined,
                             leadingError);
@@ -19429,12 +19428,12 @@ namespace ts {
                             }
                             return;
                         }
-                        //jsdocTypeNongenericInstantiationAttempt fails if I do `symbol.flags & SymbolFlags.TypeAlias ? getSymbolLinks(symbol).typeParameters : undefined;`
+                        // TODO: GH#18217 Test `jsdocTypeNongenericInstantiationAttempt` fails if I do `symbol.flags & SymbolFlags.TypeAlias ? getSymbolLinks(symbol).typeParameters : undefined;`
                         let typeParameters = symbol.flags & SymbolFlags.TypeAlias && getSymbolLinks(symbol).typeParameters;
                         if (!typeParameters && getObjectFlags(type) & ObjectFlags.Reference) {
                             typeParameters = (<TypeReference>type).target.localTypeParameters!;
                         }
-                        checkTypeArgumentConstraints(typeParameters as TypeParameter[], node.typeArguments); //fishy
+                        checkTypeArgumentConstraints(typeParameters as TypeParameter[], node.typeArguments); // TODO: GH#18217
                     }
                 }
                 if (type.flags & TypeFlags.Enum && getNodeLinks(node).resolvedSymbol!.flags & SymbolFlags.EnumMember) {
@@ -19884,7 +19883,7 @@ namespace ts {
                 return typeAsPromise.promisedTypeOfPromise = (<GenericType>promise).typeArguments![0];
             }
 
-            const thenFunction = getTypeOfPropertyOfType(promise, "then" as __String)!; //fishy
+            const thenFunction = getTypeOfPropertyOfType(promise, "then" as __String)!; // TODO: GH#18217
             if (isTypeAny(thenFunction)) {
                 return undefined;
             }
@@ -20066,7 +20065,7 @@ namespace ts {
             //      then<U>(...): Promise<U>;
             //  }
             //
-            const returnTypeNode = getEffectiveReturnTypeNode(node)!; //fishy
+            const returnTypeNode = getEffectiveReturnTypeNode(node)!; // TODO: GH#18217
             const returnType = getTypeFromTypeNode(returnTypeNode);
 
             if (languageVersion >= ScriptTarget.ES2015) {
@@ -20156,7 +20155,7 @@ namespace ts {
                 case SyntaxKind.Parameter:
                     expectedReturnType = voidType;
                     errorInfo = chainDiagnosticMessages(
-                        undefined,
+                        /*details*/ undefined,
                         Diagnostics.The_return_type_of_a_parameter_decorator_function_must_be_either_void_or_any);
 
                     break;
@@ -20164,14 +20163,14 @@ namespace ts {
                 case SyntaxKind.PropertyDeclaration:
                     expectedReturnType = voidType;
                     errorInfo = chainDiagnosticMessages(
-                        undefined,
+                        /*details*/ undefined,
                         Diagnostics.The_return_type_of_a_property_decorator_function_must_be_either_void_or_any);
                     break;
 
                 case SyntaxKind.MethodDeclaration:
                 case SyntaxKind.GetAccessor:
                 case SyntaxKind.SetAccessor:
-                    const methodType = getTypeOfNode(node.parent!)!; //fishy
+                    const methodType = getTypeOfNode(node.parent!)!; // TODO: GH#18217
                     const descriptorType = createTypedPropertyDescriptorType(methodType);
                     expectedReturnType = getUnionType([descriptorType, voidType]);
                     break;
@@ -21854,7 +21853,7 @@ namespace ts {
                 }
             }
 
-            if (errorNode && !isTypeAssignableTo(numberIndexType!, stringIndexType!)) { //fishy
+            if (errorNode && !isTypeAssignableTo(numberIndexType!, stringIndexType!)) { // TODO: GH#18217
                 error(errorNode, Diagnostics.Numeric_index_type_0_is_not_assignable_to_string_index_type_1,
                     typeToString(numberIndexType!), typeToString(stringIndexType!));
             }
@@ -22079,7 +22078,7 @@ namespace ts {
                     if (some(baseTypeNode.typeArguments)) {
                         forEach(baseTypeNode.typeArguments, checkSourceElement);
                         for (const constructor of getConstructorsForTypeArguments(staticBaseType, baseTypeNode.typeArguments, baseTypeNode)) {
-                            if (!checkTypeArgumentConstraints(constructor.typeParameters!, baseTypeNode.typeArguments!)) { //fishy
+                            if (!checkTypeArgumentConstraints(constructor.typeParameters!, baseTypeNode.typeArguments!)) { // TODO: GH#18217
                                 break;
                             }
                         }
@@ -22185,7 +22184,7 @@ namespace ts {
                     continue;
                 }
 
-                const derived = getTargetSymbol(getPropertyOfObjectType(type, base.escapedName)!); //fishy
+                const derived = getTargetSymbol(getPropertyOfObjectType(type, base.escapedName)!); // TODO: GH#18217
                 const baseDeclarationFlags = getDeclarationModifierFlagsFromSymbol(base);
 
                 Debug.assert(!!derived, "derived should point to something, even if it is the base class' declaration.");
@@ -22355,7 +22354,7 @@ namespace ts {
                 error(member.name, Diagnostics.Computed_property_names_are_not_allowed_in_enums);
             }
             else {
-                const text = getTextOfPropertyName(<PropertyName>member.name)!; //fishy
+                const text = getTextOfPropertyName(<PropertyName>member.name)!; // TODO: GH#18217
                 if (isNumericLiteralName(text) && !isInfinityOrNaNString(text)) {
                     error(member.name, Diagnostics.An_enum_member_cannot_have_a_numeric_name);
                 }
@@ -22751,9 +22750,9 @@ namespace ts {
                         node = (<PropertyAccessEntityNameExpression>node).expression;
                     } while (node.kind !== SyntaxKind.Identifier);
                     return <Identifier>node;
-                //fishy: handle parenthesizedexpression!
+                // TODO: GH#18217 Handle ParenthesizedExpression!
                 default:
-                    return undefined!; //throw Debug.assertNever(node);
+                    return undefined!; // TODO: GH#18217 throw Debug.assertNever(node);
             }
         }
 
@@ -23863,7 +23862,7 @@ namespace ts {
             //     for ({ skills: { primary, secondary } } = multiRobot, i = 0; i < 1; i++) {
             if (expr.parent!.kind === SyntaxKind.PropertyAssignment) {
                 const typeOfParentObjectLiteral = getTypeOfArrayLiteralOrObjectLiteralDestructuringAssignment(<Expression>expr.parent!.parent);
-                return checkObjectLiteralDestructuringPropertyAssignment(typeOfParentObjectLiteral || unknownType, <ObjectLiteralElementLike>expr.parent)!; //fishy
+                return checkObjectLiteralDestructuringPropertyAssignment(typeOfParentObjectLiteral || unknownType, <ObjectLiteralElementLike>expr.parent)!; // TODO: GH#18217
             }
             // Array literal assignment - array destructuring pattern
             Debug.assert(expr.parent!.kind === SyntaxKind.ArrayLiteralExpression);
@@ -23871,7 +23870,7 @@ namespace ts {
             const typeOfArrayLiteral = getTypeOfArrayLiteralOrObjectLiteralDestructuringAssignment(<Expression>expr.parent);
             const elementType = checkIteratedTypeOrElementType(typeOfArrayLiteral || unknownType, expr.parent, /*allowStringInput*/ false, /*allowAsyncIterables*/ false) || unknownType;
             return checkArrayLiteralDestructuringElementAssignment(<ArrayLiteralExpression>expr.parent, typeOfArrayLiteral,
-                indexOf((<ArrayLiteralExpression>expr.parent).elements, expr), elementType || unknownType)!; //fishy
+                indexOf((<ArrayLiteralExpression>expr.parent).elements, expr), elementType || unknownType)!; // TODO: GH#18217
         }
 
         // Gets the property symbol corresponding to the property in destructuring assignment
@@ -24411,7 +24410,7 @@ namespace ts {
                     if (!resolvedDirective) {
                         return;
                     }
-                    const file = host.getSourceFile(resolvedDirective.resolvedFileName!)!; //fishy
+                    const file = host.getSourceFile(resolvedDirective.resolvedFileName!)!; // TODO: GH#18217
                     fileToDirective.set(file.path, key);
                 });
             }
@@ -24543,7 +24542,7 @@ namespace ts {
         }
 
         function getExternalModuleFileFromDeclaration(declaration: ImportEqualsDeclaration | ImportDeclaration | ExportDeclaration | ModuleDeclaration): SourceFile | undefined {
-            const specifier = getExternalModuleName(declaration)!; //fishy
+            const specifier = getExternalModuleName(declaration)!; // TODO: GH#18217
             const moduleSymbol = resolveExternalModuleNameWorker(specifier, specifier, /*moduleNotFoundError*/ undefined);
             if (!moduleSymbol) {
                 return undefined;
@@ -24875,7 +24874,7 @@ namespace ts {
                     return grammarErrorOnNode(lastStatic!, Diagnostics._0_modifier_cannot_appear_on_a_constructor_declaration, "static");
                 }
                 if (flags & ModifierFlags.Abstract) {
-                    return grammarErrorOnNode(lastStatic!, Diagnostics._0_modifier_cannot_appear_on_a_constructor_declaration, "abstract"); //fishy
+                    return grammarErrorOnNode(lastStatic!, Diagnostics._0_modifier_cannot_appear_on_a_constructor_declaration, "abstract"); // TODO: GH#18217
                 }
                 else if (flags & ModifierFlags.Async) {
                     return grammarErrorOnNode(lastAsync!, Diagnostics._0_modifier_cannot_appear_on_a_constructor_declaration, "async");
@@ -25253,7 +25252,7 @@ namespace ts {
 
                 // Modifiers are never allowed on properties except for 'async' on a method declaration
                 if (prop.modifiers) {
-                    for (const mod of prop.modifiers!) { //why need cast?
+                    for (const mod of prop.modifiers!) { // TODO: GH#19955
                         if (mod.kind !== SyntaxKind.AsyncKeyword || prop.kind !== SyntaxKind.MethodDeclaration) {
                             grammarErrorOnNode(mod, Diagnostics._0_modifier_cannot_be_used_here, getTextOfNode(mod));
                         }

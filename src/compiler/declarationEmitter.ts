@@ -36,7 +36,7 @@ namespace ts {
         return declarationDiagnostics.getDiagnostics(targetSourceFile ? targetSourceFile.fileName : undefined);
 
         function getDeclarationDiagnosticsFromFile({ declarationFilePath }: EmitFileNames, sourceFileOrBundle: SourceFile | Bundle) {
-            emitDeclarations(host, resolver, declarationDiagnostics, declarationFilePath!, sourceFileOrBundle, /*emitOnlyDtsFiles*/ false); //fishy
+            emitDeclarations(host, resolver, declarationDiagnostics, declarationFilePath!, sourceFileOrBundle, /*emitOnlyDtsFiles*/ false); // TODO: GH#18217
         }
     }
 
@@ -849,14 +849,14 @@ namespace ts {
             let moduleSpecifier: Node;
             if (parent.kind === SyntaxKind.ImportEqualsDeclaration) {
                 const node = parent as ImportEqualsDeclaration;
-                moduleSpecifier = getExternalModuleImportEqualsDeclarationExpression(node)!; //fishy
+                moduleSpecifier = getExternalModuleImportEqualsDeclarationExpression(node)!; // TODO: GH#18217
             }
             else if (parent.kind === SyntaxKind.ModuleDeclaration) {
                 moduleSpecifier = (<ModuleDeclaration>parent).name;
             }
             else {
                 const node = parent as (ImportDeclaration | ExportDeclaration);
-                moduleSpecifier = node.moduleSpecifier!; //fishy
+                moduleSpecifier = node.moduleSpecifier!; // TODO: GH#18217
             }
 
             if (moduleSpecifier.kind === SyntaxKind.StringLiteral && isBundledEmit && (compilerOptions.out || compilerOptions.outFile)) {

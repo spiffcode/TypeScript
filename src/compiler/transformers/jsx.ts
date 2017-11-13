@@ -102,7 +102,7 @@ namespace ts {
                     spanMap(attrs, isJsxSpreadAttribute, (attrs, isSpread) => isSpread
                         ? map(attrs, transformJsxSpreadAttributeToExpression)
                         : createObjectLiteral(map(attrs, transformJsxAttributeToObjectLiteralElement))
-                    )! //fishy
+                    )! // TODO: GH#18217
                 );
 
                 if (isJsxSpreadAttribute(attrs[0])) {
@@ -121,7 +121,7 @@ namespace ts {
 
             const element = createExpressionForJsxElement(
                 context.getEmitResolver().getJsxFactoryEntity(),
-                compilerOptions.reactNamespace!, //fishy
+                compilerOptions.reactNamespace!, // TODO: GH#18217
                 tagName,
                 objectProperties,
                 mapDefined(children, transformJsxChildToExpression),
@@ -139,7 +139,7 @@ namespace ts {
         function visitJsxOpeningFragment(node: JsxOpeningFragment, children: ReadonlyArray<JsxChild>, isChild: boolean, location: TextRange) {
             const element = createExpressionForJsxFragment(
                 context.getEmitResolver().getJsxFactoryEntity(),
-                compilerOptions.reactNamespace!, //fishy
+                compilerOptions.reactNamespace!, // TODO: GH#18217
                 mapDefined(children, transformJsxChildToExpression),
                 node,
                 location
@@ -158,7 +158,7 @@ namespace ts {
 
         function transformJsxAttributeToObjectLiteralElement(node: JsxAttribute) {
             const name = getAttributeName(node);
-            const expression = transformJsxAttributeInitializer(node.initializer!)!; //fishy
+            const expression = transformJsxAttributeInitializer(node.initializer!)!; // TODO: GH#18217
             return createPropertyAssignment(name, expression);
         }
 

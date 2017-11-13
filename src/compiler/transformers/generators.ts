@@ -1912,7 +1912,7 @@ namespace ts {
                 beginExceptionBlock();
                 transformAndEmitEmbeddedStatement(node.tryBlock);
                 if (node.catchClause) {
-                    beginCatchBlock(node.catchClause.variableDeclaration!); //fishy
+                    beginCatchBlock(node.catchClause.variableDeclaration!); // TODO: GH#18217
                     transformAndEmitEmbeddedStatement(node.catchClause.block);
                 }
 
@@ -2438,7 +2438,7 @@ namespace ts {
          */
         function createInstruction(instruction: Instruction): NumericLiteral {
             const literal = createLiteral(instruction);
-            addSyntheticTrailingComment(literal, SyntaxKind.MultiLineCommentTrivia, getInstructionName(instruction)!); //fishy
+            addSyntheticTrailingComment(literal, SyntaxKind.MultiLineCommentTrivia, getInstructionName(instruction)!); // TODO: GH#18217
             return literal;
         }
 

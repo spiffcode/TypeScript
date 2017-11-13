@@ -465,7 +465,7 @@ namespace ts {
     }
 
     /* @internal */
-    export function isBlockScope(node: Node, parentNode: Node) {
+    export function isBlockScope(node: Node, parentNode: Node): boolean {
         switch (node.kind) {
             case SyntaxKind.SourceFile:
             case SyntaxKind.CaseBlock:
@@ -486,7 +486,7 @@ namespace ts {
             case SyntaxKind.Block:
                 // function block is not considered block-scope container
                 // see comment in binder.ts: bind(...), case for SyntaxKind.Block
-                return parentNode && !isFunctionLike(parentNode);
+                return !isFunctionLike(parentNode);
         }
 
         return false;
@@ -536,16 +536,12 @@ namespace ts {
     // Gets the nearest enclosing block scope container that has the provided node
     // as a descendant, that is not the provided node.
     export function getEnclosingBlockScopeContainer(node: Node): Node {
-        let current = node.parent;
-        while (current) {
-            if (isBlockScope(current, current.parent!)) {
-                return current;
+        while (true) {
+            node = node.parent!;
+            if (isBlockScope(node, node.parent!)) {
+                return node;
             }
-
-            current = current.parent;
         }
-        //SourceFile is a block scope
-        throw Debug.fail();
     }
 
     // Return display name of an identifier

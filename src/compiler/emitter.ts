@@ -92,7 +92,7 @@ namespace ts {
         const sourceFiles = getSourceFilesToEmit(host, targetSourceFile);
 
         // Transform the source files
-        const transform = transformNodes(resolver, host, compilerOptions, sourceFiles, transformers!, /*allowDtsFiles*/ false); //fishy
+        const transform = transformNodes(resolver, host, compilerOptions, sourceFiles, transformers!, /*allowDtsFiles*/ false); // TODO: GH#18217
 
         // Create a printer to print the nodes
         const printer = createPrinter(compilerOptions, {
@@ -181,7 +181,7 @@ namespace ts {
 
             // Write the source map
             if (compilerOptions.sourceMap && !compilerOptions.inlineSourceMap) {
-                writeFile(host, emitterDiagnostics, sourceMapFilePath!, sourceMap.getText()!, /*writeByteOrderMark*/ false, sourceFiles); //fishy
+                writeFile(host, emitterDiagnostics, sourceMapFilePath!, sourceMap.getText()!, /*writeByteOrderMark*/ false, sourceFiles); // TODO: GH#18217
             }
 
             // Record source map data for the test harness.
@@ -392,7 +392,7 @@ namespace ts {
         }
 
         function setWriter(output: EmitTextWriter | undefined) {
-            writer = output!; //fishy
+            writer = output!; // TODO: GH#18217
             comments.setWriter(output);
         }
 
@@ -1444,7 +1444,7 @@ namespace ts {
 
         function emitYieldExpression(node: YieldExpression) {
             write("yield");
-            emit(node.asteriskToken!); //fishy
+            emit(node.asteriskToken!); // TODO: GH#18217
             emitExpressionWithPrefix(" ", node.expression);
         }
 
@@ -2484,7 +2484,7 @@ namespace ts {
                 // Write the opening line terminator or leading whitespace.
                 const mayEmitInterveningComments = (format & ListFormat.NoInterveningComments) === 0;
                 let shouldEmitInterveningComments = mayEmitInterveningComments;
-                if (shouldWriteLeadingLineTerminator(parentNode, children!, format)) { //fishy
+                if (shouldWriteLeadingLineTerminator(parentNode, children!, format)) { // TODO: GH#18217
                     writeLine();
                     shouldEmitInterveningComments = false;
                 }
@@ -2630,7 +2630,7 @@ namespace ts {
         function writeTokenText(token: SyntaxKind, pos?: number): number {
             const tokenString = tokenToString(token)!;
             write(tokenString);
-            return pos! < 0 ? pos! : pos! + tokenString.length; //super fishy
+            return pos! < 0 ? pos! : pos! + tokenString.length; // TODO: GH#18217
         }
 
         function writeLineOrSpace(node: Node) {
@@ -2735,7 +2735,7 @@ namespace ts {
                 }
             }
             else {
-                return getStartsOnNewLine(nextNode!); //fishy
+                return getStartsOnNewLine(nextNode!); // TODO: GH#18217
             }
         }
 
@@ -2981,7 +2981,7 @@ namespace ts {
          * Generates a unique name for an ImportDeclaration or ExportDeclaration.
          */
         function generateNameForImportOrExportDeclaration(node: ImportDeclaration | ExportDeclaration) {
-            const expr = getExternalModuleName(node)!; //fishy
+            const expr = getExternalModuleName(node)!; // TODO: GH#18217
             const baseName = isStringLiteral(expr) ?
                 makeIdentifierFromModuleName(expr.text) : "module";
             return makeUniqueName(baseName);

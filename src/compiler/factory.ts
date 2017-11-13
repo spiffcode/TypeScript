@@ -866,7 +866,7 @@ namespace ts {
     export function createPropertyAccess(expression: Expression, name: string | Identifier | undefined) {
         const node = <PropertyAccessExpression>createSynthesizedNode(SyntaxKind.PropertyAccessExpression);
         node.expression = parenthesizeForAccess(expression);
-        node.name = asName(name)!; //fishy
+        node.name = asName(name)!; // TODO: GH#18217
         setEmitFlags(node, EmitFlags.NoIndentation);
         return node;
     }
@@ -1908,7 +1908,7 @@ namespace ts {
         node.decorators = asNodeArray(decorators);
         node.modifiers = asNodeArray(modifiers);
         node.importClause = importClause;
-        node.moduleSpecifier = moduleSpecifier!; //fishy
+        node.moduleSpecifier = moduleSpecifier!; // TODO: GH#18217
         return node;
     }
 
@@ -2271,7 +2271,7 @@ namespace ts {
 
     export function createSpreadAssignment(expression: Expression) {
         const node = <SpreadAssignment>createSynthesizedNode(SyntaxKind.SpreadAssignment);
-        node.expression = expression !== undefined ? parenthesizeExpressionForList(expression) : undefined!; //fishy
+        node.expression = expression !== undefined ? parenthesizeExpressionForList(expression) : undefined!; // TODO: GH#18217
         return node;
     }
 
@@ -3391,7 +3391,7 @@ namespace ts {
                     /*typeParameters*/ undefined,
                     getAccessor.parameters,
                     /*type*/ undefined,
-                    getAccessor.body! //fishy
+                    getAccessor.body! // TODO: GH#18217
                 );
                 setTextRange(getterFunction, getAccessor);
                 setOriginalNode(getterFunction, getAccessor);
@@ -3407,7 +3407,7 @@ namespace ts {
                     /*typeParameters*/ undefined,
                     setAccessor.parameters,
                     /*type*/ undefined,
-                    setAccessor.body! //fishy
+                    setAccessor.body! // TODO: GH#18217
                 );
                 setTextRange(setterFunction, setAccessor);
                 setOriginalNode(setterFunction, setAccessor);
@@ -3443,7 +3443,7 @@ namespace ts {
                 setTextRange(
                     createAssignment(
                         createMemberAccessForPropertyName(receiver, property.name, /*location*/ property.name),
-                        property.initializer! //fishy
+                        property.initializer! // TODO: GH#18217
                     ),
                     property
                 ),
@@ -3482,7 +3482,7 @@ namespace ts {
                                     /*typeParameters*/ undefined,
                                     method.parameters,
                                     /*type*/ undefined,
-                                    method.body! //fishy
+                                    method.body! // TODO: GH#18217
                                 ),
                                 /*location*/ method
                             ),
@@ -3614,10 +3614,10 @@ namespace ts {
     export function getNamespaceMemberName(ns: Identifier, name: Identifier, allowComments?: boolean, allowSourceMaps?: boolean): PropertyAccessExpression {
         const qualifiedName = createPropertyAccess(ns, nodeIsSynthesized(name) ? name : getSynthesizedClone(name));
         setTextRange(qualifiedName, name);
-        let emitFlags: EmitFlags;
-        if (!allowSourceMaps) emitFlags! |= EmitFlags.NoSourceMap;
-        if (!allowComments) emitFlags! |= EmitFlags.NoComments;
-        if (emitFlags!) setEmitFlags(qualifiedName, emitFlags!);
+        let emitFlags: EmitFlags = 0;
+        if (!allowSourceMaps) emitFlags |= EmitFlags.NoSourceMap;
+        if (!allowComments) emitFlags |= EmitFlags.NoComments;
+        if (emitFlags) setEmitFlags(qualifiedName, emitFlags!);
         return qualifiedName;
     }
 
@@ -3634,7 +3634,7 @@ namespace ts {
             node.typeParameters,
             node.parameters,
             node.type,
-            node.body! //fishy
+            node.body! // TODO: GH#18217
         );
         setOriginalNode(updated, node);
         setTextRange(updated, node);
@@ -4338,7 +4338,7 @@ namespace ts {
      * Otherwise, a new StringLiteral node representing the module name will be returned.
      */
     export function getExternalModuleNameLiteral(importNode: ImportDeclaration | ExportDeclaration | ImportEqualsDeclaration, sourceFile: SourceFile, host: EmitHost, resolver: EmitResolver, compilerOptions: CompilerOptions) {
-        const moduleName = getExternalModuleName(importNode)!; //fishy
+        const moduleName = getExternalModuleName(importNode)!; // TODO: GH#18217
         if (moduleName.kind === SyntaxKind.StringLiteral) {
             return tryGetModuleNameFromDeclaration(importNode, host, resolver, compilerOptions)
                 || tryRenameExternalModule(<StringLiteral>moduleName, sourceFile)
@@ -4400,7 +4400,7 @@ namespace ts {
             // `1` in `({ a: b = 1 } = ...)`
             // `1` in `({ a: {b} = 1 } = ...)`
             // `1` in `({ a: [b] = 1 } = ...)`
-            const initializer = bindingElement.initializer!; //fishy
+            const initializer = bindingElement.initializer!; // TODO: GH#18217
             return isAssignmentExpression(initializer, /*excludeCompoundAssignment*/ true)
                 ? initializer.right
                 : undefined;
@@ -4529,7 +4529,7 @@ namespace ts {
                 // `"a"` in `let { "a": b } = ...`
                 // `1` in `let { 1: b } = ...`
                 if ((<BindingElement>bindingElement).propertyName) {
-                    const propertyName = (<BindingElement>bindingElement).propertyName!; //fishy
+                    const propertyName = (<BindingElement>bindingElement).propertyName!; // TODO: GH#18217
                     return isComputedPropertyName(propertyName) && isStringOrNumericLiteral(propertyName.expression)
                         ? propertyName.expression
                         : propertyName;

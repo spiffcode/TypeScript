@@ -1899,7 +1899,7 @@ namespace ts {
                 case ParsingContext.ImportOrExportSpecifiers: return Diagnostics.Identifier_expected;
                 case ParsingContext.JsxAttributes: return Diagnostics.Identifier_expected;
                 case ParsingContext.JsxChildren: return Diagnostics.Identifier_expected;
-                default: return undefined!; //TODO: default: Debug.assertNever(context);
+                default: return undefined!; // TODO: GH#18217 `default: Debug.assertNever(context);`
             }
         }
 
@@ -2315,7 +2315,7 @@ namespace ts {
             if (!(flags & SignatureFlags.JSDoc)) {
                 signature.typeParameters = parseTypeParameters();
             }
-            signature.parameters = parseParameterList(flags)!; //fishy
+            signature.parameters = parseParameterList(flags)!; // TODO: GH#18217
             signature.type = parseReturnType(returnToken, !!(flags & SignatureFlags.Type));
         }
 
@@ -4035,7 +4035,7 @@ namespace ts {
                     badNode.end = invalidElement.end;
                     badNode.left = result;
                     badNode.right = invalidElement;
-                    badNode.operatorToken = <BinaryOperatorToken>createMissingNode(SyntaxKind.CommaToken, /*reportAtCurrentPosition*/ false, /*diagnosticMessage*/ undefined!); //TODO: fishy cast
+                    badNode.operatorToken = <BinaryOperatorToken>createMissingNode(SyntaxKind.CommaToken, /*reportAtCurrentPosition*/ false, /*diagnosticMessage*/ undefined!); // TODO: GH#18217
                     badNode.operatorToken.pos = badNode.operatorToken.end = badNode.right.pos;
                     return <JsxElement><Node>badNode;
                 }
@@ -5211,7 +5211,7 @@ namespace ts {
                         node.modifiers = modifiers;
                         return finishNode(node);
                     }
-                    return undefined!; //todo: fishy
+                    return undefined!; // TODO: GH#18217
             }
         }
 
@@ -5695,14 +5695,12 @@ namespace ts {
 
         function parseHeritageClause(): HeritageClause {
             const tok = token();
-            if (tok === SyntaxKind.ExtendsKeyword || tok === SyntaxKind.ImplementsKeyword) {
-                const node = <HeritageClause>createNode(SyntaxKind.HeritageClause);
-                node.token = tok;
-                nextToken();
-                node.types = parseDelimitedList(ParsingContext.HeritageClauseElement, parseExpressionWithTypeArguments);
-                return finishNode(node);
-            }
-            throw Debug.fail(); //isListElement() should have caught this.
+            Debug.assert(tok === SyntaxKind.ExtendsKeyword || tok === SyntaxKind.ImplementsKeyword); // isListElement() should ensure this.
+            const node = <HeritageClause>createNode(SyntaxKind.HeritageClause);
+            node.token = tok as SyntaxKind.ExtendsKeyword | SyntaxKind.ImplementsKeyword;
+            nextToken();
+            node.types = parseDelimitedList(ParsingContext.HeritageClauseElement, parseExpressionWithTypeArguments);
+            return finishNode(node);
         }
 
         function parseExpressionWithTypeArguments(): ExpressionWithTypeArguments {
@@ -6715,7 +6713,7 @@ namespace ts {
                     while (parseOptional(SyntaxKind.DotToken)) {
                         const prop: PropertyAccessEntityNameExpression = createNode(SyntaxKind.PropertyAccessExpression, node.pos) as PropertyAccessEntityNameExpression;
                         prop.expression = node;
-                        prop.name = parseJSDocIdentifierName()!; //fishy
+                        prop.name = parseJSDocIdentifierName()!; // TODO: GH#18217
                         node = finishNode(prop);
                     }
                     return node;

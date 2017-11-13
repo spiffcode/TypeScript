@@ -1625,7 +1625,7 @@ namespace ts {
             // No comments should be emitted for this statement to align with the
             // old emitter.
             setEmitFlags(statement, EmitFlags.NoComments);
-            setSourceMapRange(statement, getSourceMapRange(accessors.firstAccessor!)); //fishy
+            setSourceMapRange(statement, getSourceMapRange(accessors.firstAccessor!)); // TODO: GH#18217
             return statement;
         }
 
@@ -1642,7 +1642,7 @@ namespace ts {
             // arguments are both mapped contiguously to the accessor name.
             const target = getMutableClone(receiver);
             setEmitFlags(target, EmitFlags.NoComments | EmitFlags.NoTrailingSourceMap);
-            setSourceMapRange(target, firstAccessor!.name); //fishy
+            setSourceMapRange(target, firstAccessor!.name); // TODO: GH#18217
 
             const propertyName = createExpressionForPropertyName(visitNode(firstAccessor!.name, visitor, isPropertyName));
             setEmitFlags(propertyName, EmitFlags.NoComments | EmitFlags.NoLeadingSourceMap);

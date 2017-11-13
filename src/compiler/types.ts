@@ -3389,7 +3389,7 @@ namespace ts {
         typeParameters: TypeParameter[] | undefined;      // Type parameters (undefined if non-generic)
         outerTypeParameters: TypeParameter[] | undefined; // Outer type parameters (undefined if none)
         localTypeParameters: TypeParameter[] | undefined; // Local type parameters (undefined if none)
-        thisType: TypeParameter |  undefined;             // The "this" type (undefined if none)
+        thisType: TypeParameter | undefined;             // The "this" type (undefined if none)
         /* @internal */
         resolvedBaseConstructorType?: Type;               // Resolved base constructor type of class
         /* @internal */

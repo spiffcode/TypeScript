@@ -80,7 +80,7 @@ namespace ts {
             return sys.useCaseSensitiveFileNames ? fileName : fileName.toLowerCase();
         }
 
-        function getSourceFile(fileName: string, languageVersion: ScriptTarget, onError?: (message: string) => void): SourceFile | undefined{
+        function getSourceFile(fileName: string, languageVersion: ScriptTarget, onError?: (message: string) => void): SourceFile | undefined {
             let text: string | undefined;
             try {
                 performance.mark("beforeIORead");
@@ -124,7 +124,7 @@ namespace ts {
                 outputFingerprints = createMap<OutputFingerprint>();
             }
 
-            const hash = sys.createHash!(data);//fishy
+            const hash = sys.createHash!(data); // TODO: GH#18217
             const mtimeBefore = sys.getModifiedTime!(fileName);
 
             if (mtimeBefore) {
@@ -232,7 +232,7 @@ namespace ts {
         const errorMessage = `${category} TS${diagnostic.code}: ${flattenDiagnosticMessageText(diagnostic.messageText, host.getNewLine())}${host.getNewLine()}`;
 
         if (diagnostic.file) {
-            const { line, character } = getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start!); //fishy
+            const { line, character } = getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start!); // TODO: GH#18217
             const fileName = diagnostic.file.fileName;
             const relativeFileName = convertToRelativePath(fileName, host.getCurrentDirectory(), fileName => host.getCanonicalFileName(fileName));
             return `${relativeFileName}(${line + 1},${character + 1}): ` + errorMessage;
@@ -273,7 +273,7 @@ namespace ts {
             let context = "";
             if (diagnostic.file) {
                 const { start, length, file } = diagnostic;
-                const { line: firstLine, character: firstLineChar } = getLineAndCharacterOfPosition(file, start!); //fishy
+                const { line: firstLine, character: firstLineChar } = getLineAndCharacterOfPosition(file, start!); // TODO: GH#18217
                 const { line: lastLine, character: lastLineChar } = getLineAndCharacterOfPosition(file, start! + length!);
                 const lastLineInFile = getLineAndCharacterOfPosition(file, file.text.length).line;
                 const relativeFileName = host ? convertToRelativePath(file.fileName, host.getCurrentDirectory(), fileName => host.getCanonicalFileName(fileName)) : file.fileName;
@@ -896,7 +896,7 @@ namespace ts {
             for (const oldSourceFile of oldSourceFiles) {
                 let newSourceFile = host!.getSourceFileByPath
                     ? host!.getSourceFileByPath!(oldSourceFile.fileName, oldSourceFile.path, options.target!, /*onError*/ undefined, shouldCreateNewSourceFile)
-                    : host!.getSourceFile(oldSourceFile.fileName, options.target!, /*onError*/ undefined, shouldCreateNewSourceFile); //options.target! fishy
+                    : host!.getSourceFile(oldSourceFile.fileName, options.target!, /*onError*/ undefined, shouldCreateNewSourceFile); // TODO: GH#18217
 
                 if (!newSourceFile) {
                     return oldProgram.structureIsReused = StructureIsReused.Not;
@@ -1231,7 +1231,7 @@ namespace ts {
                         sourceFile.additionalSyntacticDiagnostics = concatenate(sourceFile.additionalSyntacticDiagnostics, sourceFile.jsDocDiagnostics);
                     }
                 }
-                return concatenate(sourceFile.additionalSyntacticDiagnostics, sourceFile.parseDiagnostics)!; //fishy
+                return concatenate(sourceFile.additionalSyntacticDiagnostics, sourceFile.parseDiagnostics)!; // TODO: GH#18217
             }
             return sourceFile.parseDiagnostics;
         }
@@ -1296,7 +1296,7 @@ namespace ts {
             const { file, start } = diagnostic;
             if (file) {
                 const lineStarts = getLineStarts(file);
-                let { line } = computeLineAndCharacterOfPosition(lineStarts, start!); //fishy
+                let { line } = computeLineAndCharacterOfPosition(lineStarts, start!); // TODO: GH#18217
                 while (line > 0) {
                     const previousLineText = file.text.slice(lineStarts[line - 1], lineStarts[line]);
                     const result = ignoreDiagnosticCommentRegEx.exec(previousLineText);
@@ -1789,7 +1789,7 @@ namespace ts {
             }
 
             // We haven't looked for this file, do so now and cache result
-            const file = host!.getSourceFile(fileName, options.target!, hostErrorMessage => { //fishy options.target!
+            const file = host!.getSourceFile(fileName, options.target!, hostErrorMessage => { // TODO: GH#18217
                 if (refFile !== undefined && refPos !== undefined && refEnd !== undefined) {
                     fileProcessingDiagnostics.add(createFileDiagnostic(refFile, refPos, refEnd - refPos,
                         Diagnostics.Cannot_read_file_0_Colon_1, fileName, hostErrorMessage));
@@ -1805,7 +1805,7 @@ namespace ts {
                 if (fileFromPackageId) {
                     // Some other SourceFile already exists with this package name and version.
                     // Instead of creating a duplicate, just redirect to the existing one.
-                    const dupFile = createRedirectSourceFile(fileFromPackageId, file!, fileName, path); //fishy
+                    const dupFile = createRedirectSourceFile(fileFromPackageId, file!, fileName, path); // TODO: GH#18217
                     redirectTargetsSet.set(fileFromPackageId.path, true);
                     filesByName.set(path, dupFile);
                     sourceFileToPackageName.set(path, packageId.name);
@@ -1891,7 +1891,7 @@ namespace ts {
             if (resolvedTypeReferenceDirective) {
                 if (resolvedTypeReferenceDirective.primary) {
                     // resolved from the primary path
-                    processSourceFile(resolvedTypeReferenceDirective.resolvedFileName!, /*isDefaultLib*/ false, resolvedTypeReferenceDirective.packageId, refFile, refPos, refEnd); //fishy
+                    processSourceFile(resolvedTypeReferenceDirective.resolvedFileName!, /*isDefaultLib*/ false, resolvedTypeReferenceDirective.packageId, refFile, refPos, refEnd); // TODO: GH#18217
                 }
                 else {
                     // If we already resolved to this file, it must have been a secondary reference. Check file contents
@@ -1901,7 +1901,7 @@ namespace ts {
                         if (resolvedTypeReferenceDirective.resolvedFileName !== previousResolution.resolvedFileName) {
                             const otherFileText = host!.readFile(resolvedTypeReferenceDirective.resolvedFileName!);
                             if (otherFileText !== getSourceFile(previousResolution.resolvedFileName!)!.text) {
-                                fileProcessingDiagnostics.add(createDiagnostic(refFile!, refPos!, refEnd!, //fishy
+                                fileProcessingDiagnostics.add(createDiagnostic(refFile!, refPos!, refEnd!, // TODO: GH#18217
                                     Diagnostics.Conflicting_definitions_for_0_found_at_1_and_2_Consider_installing_a_specific_version_of_this_library_to_resolve_the_conflict,
                                     typeReferenceDirective,
                                     resolvedTypeReferenceDirective.resolvedFileName,
@@ -2248,7 +2248,7 @@ namespace ts {
                         const keyInit = keyProps.initializer!;
                         if (isArrayLiteralExpression(keyInit) &&
                             keyInit.elements.length > valueIndex) {
-                            programDiagnostics.add(createDiagnosticForNodeInSourceFile(options.configFile!, keyInit.elements[valueIndex], message, arg0, arg1, arg2)); //fishy
+                            programDiagnostics.add(createDiagnosticForNodeInSourceFile(options.configFile!, keyInit.elements[valueIndex], message, arg0, arg1, arg2)); // TODO: GH#18217
                             needCompilerDiagnostic = false;
                         }
                     }

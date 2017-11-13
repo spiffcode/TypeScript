@@ -1789,7 +1789,7 @@ namespace ts {
             Comparison.EqualTo;
     }
 
-    function compareMessageText(text1_: string | DiagnosticMessageChain, text2_: string | DiagnosticMessageChain): Comparison {
+    function compareMessageText(text1: string | DiagnosticMessageChain, text2: string | DiagnosticMessageChain): Comparison {
         let text1: string | DiagnosticMessageChain | undefined = text1_;
         let text2: string | DiagnosticMessageChain | undefined = text2_;
         while (text1 && text2) {

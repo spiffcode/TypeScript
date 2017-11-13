@@ -100,7 +100,7 @@ namespace ts {
             expressions!.push(value);
         }
 
-        return aggregateTransformFlags(inlineExpressions(expressions!)) || createOmittedExpression(); //fishy
+        return aggregateTransformFlags(inlineExpressions(expressions!)) || createOmittedExpression(); // TODO: GH#18217
 
         function emitExpression(expression: Expression) {
             // NOTE: this completely disables source maps, but aligns with the behavior of
@@ -233,7 +233,7 @@ namespace ts {
                 value = createVoidZero();
             }
         }
-        const bindingTarget = getTargetOfBindingOrAssignmentElement(element)!; //super fishy
+        const bindingTarget = getTargetOfBindingOrAssignmentElement(element)!; // TODO: GH#18217
         if (isObjectBindingOrAssignmentPattern(bindingTarget)) {
             flattenObjectBindingOrAssignmentPattern(flattenContext, element, bindingTarget, value!, location);
         }
@@ -241,7 +241,7 @@ namespace ts {
             flattenArrayBindingOrAssignmentPattern(flattenContext, element, bindingTarget, value!, location);
         }
         else {
-            flattenContext.emitBindingOrAssignment(bindingTarget, value!, location, /*original*/ element); //fishy
+            flattenContext.emitBindingOrAssignment(bindingTarget, value!, location, /*original*/ element); // TODO: GH#18217
         }
     }
 
@@ -294,7 +294,7 @@ namespace ts {
                     flattenContext.emitBindingOrAssignment(flattenContext.createObjectBindingOrAssignmentPattern(bindingElements), value, location, pattern);
                     bindingElements = undefined;
                 }
-                const rhsValue = createRestCall(flattenContext.context, value, elements, computedTempVariables!, pattern); //fishy
+                const rhsValue = createRestCall(flattenContext.context, value, elements, computedTempVariables!, pattern); // TODO: GH#18217
                 flattenBindingOrAssignmentElement(flattenContext, element, rhsValue, element);
             }
         }

@@ -349,9 +349,9 @@ namespace ts {
             return perFolderCache;
         }
 
-        function getOrCreateCacheForModuleName(nonRelativeModuleName: string) {
+        function getOrCreateCacheForModuleName(nonRelativeModuleName: string): PerModuleNameCache {
             if (isExternalModuleNameRelative(nonRelativeModuleName)) {
-                return undefined!; //TODO
+                return undefined!; // TODO: GH#18217
             }
             let perModuleNameCache = moduleNameToDirectoryMap.get(nonRelativeModuleName);
             if (!perModuleNameCache) {

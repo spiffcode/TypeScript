@@ -259,7 +259,7 @@ namespace ts {
                     Debug.assert(isWellKnownSymbolSyntactically(nameExpression));
                     return getPropertyNameForKnownSymbolName(idText((<PropertyAccessExpression>nameExpression).name));
                 }
-                return getEscapedTextOfIdentifierOrLiteral(<Identifier | StringLiteral | NumericLiteral>name); //TODO: fishy cast
+                return getEscapedTextOfIdentifierOrLiteral(<Identifier | StringLiteral | NumericLiteral>name); // TODO: GH#18217
             }
             switch (node.kind) {
                 case SyntaxKind.Constructor:
@@ -2305,7 +2305,7 @@ namespace ts {
 
         function bindThisPropertyAssignment(node: BinaryExpression) {
             Debug.assert(isInJavaScriptFile(node));
-            const container = getThisContainer(node, /*includeArrowFunctions*/ false)!; //TODO: iffy cast
+            const container = getThisContainer(node, /*includeArrowFunctions*/ false)!; // TODO: GH#18217
             switch (container!.kind) {
                 case SyntaxKind.FunctionDeclaration:
                 case SyntaxKind.FunctionExpression:

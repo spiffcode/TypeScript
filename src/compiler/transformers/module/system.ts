@@ -262,7 +262,7 @@ namespace ts {
             // - Temporary variables will appear at the top rather than at the bottom of the file
             addRange(statements, endLexicalEnvironment());
 
-            const exportStarFunction = addExportStarIfNeeded(statements)!; //fishy
+            const exportStarFunction = addExportStarIfNeeded(statements)!; // TODO: GH#18217
             const moduleObject = createObjectLiteral([
                 createPropertyAssignment("setters",
                     createSettersArray(exportStarFunction, dependencyGroups)
@@ -468,7 +468,7 @@ namespace ts {
                 const parameterName = localName ? getGeneratedNameForNode(localName) : createUniqueName("");
                 const statements: Statement[] = [];
                 for (const entry of group.externalImports) {
-                    const importVariableName = getLocalNameForExternalImport(entry, currentSourceFile)!; //fishy
+                    const importVariableName = getLocalNameForExternalImport(entry, currentSourceFile)!; // TODO: GH#18217
                     switch (entry.kind) {
                         case SyntaxKind.ImportDeclaration:
                             if (!(<ImportDeclaration>entry).importClause) {
@@ -596,7 +596,7 @@ namespace ts {
         function visitImportDeclaration(node: ImportDeclaration): VisitResult<Statement> {
             let statements: Statement[] | undefined;
             if (node.importClause) {
-                hoistVariableDeclaration(getLocalNameForExternalImport(node, currentSourceFile)!); //fishy
+                hoistVariableDeclaration(getLocalNameForExternalImport(node, currentSourceFile)!); // TODO: GH#18217
             }
 
             if (hasAssociatedEndOfDeclarationMarker(node)) {
@@ -620,7 +620,7 @@ namespace ts {
             Debug.assert(isExternalModuleImportEqualsDeclaration(node), "import= for internal module references should be handled in an earlier transformer.");
 
             let statements: Statement[] | undefined;
-            hoistVariableDeclaration(getLocalNameForExternalImport(node, currentSourceFile)!); //fishy
+            hoistVariableDeclaration(getLocalNameForExternalImport(node, currentSourceFile)!); // TODO: GH#18217
 
             if (hasAssociatedEndOfDeclarationMarker(node)) {
                 // Defer exports until we encounter an EndOfDeclarationMarker node

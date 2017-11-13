@@ -99,7 +99,7 @@ namespace ts {
 
         const directoryWatchesOfFailedLookups = createMap<DirectoryWatchesOfFailedLookup>();
         const rootDir = rootDirForResolution && removeTrailingDirectorySeparator(getNormalizedAbsolutePath(rootDirForResolution, getCurrentDirectory()));
-        const rootPath = (rootDir && resolutionHost.toPath(rootDir)) as Path; //fishy!!!
+        const rootPath = (rootDir && resolutionHost.toPath(rootDir)) as Path; // TODO: GH#18217
 
         // TypeRoot watches for the types that get added as part of getAutomaticTypeDirectiveNames
         const typeRootsWatches = createMap<FileWatcher>();
@@ -265,7 +265,7 @@ namespace ts {
                 }
                 Debug.assert(resolution !== undefined && !resolution.isInvalidated);
                 seenNamesInFile.set(name, true);
-                resolvedModules.push(getResolutionWithResolvedFileName(resolution)!); //fishy
+                resolvedModules.push(getResolutionWithResolvedFileName(resolution)!); // TODO: GH#18217
             }
 
             // Stop watching and remove the unused name
@@ -548,7 +548,7 @@ namespace ts {
                 // Resolution is invalidated if the resulting file name is same as the deleted file path
                 (resolution, getResolutionWithResolvedFileName) => {
                     const result = getResolutionWithResolvedFileName(resolution);
-                    return !!result && resolutionHost.toPath(result.resolvedFileName!) === filePath; //fishy
+                    return !!result && resolutionHost.toPath(result.resolvedFileName!) === filePath; // TODO: GH#18217
                 }
             );
         }
