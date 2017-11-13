@@ -125,7 +125,7 @@ namespace ts {
                 return this.text.length;
             }
 
-            public getChangeRange(): TextChangeRange {
+            public getChangeRange(): TextChangeRange | undefined {
                 // Text-based snapshots do not support incremental parsing. Return undefined
                 // to signal that to the caller.
                 return undefined;
@@ -708,7 +708,7 @@ namespace ts {
     export interface CompletionEntry {
         name: string;
         kind: ScriptElementKind;
-        kindModifiers: string;   // see ScriptElementKindModifier, comma separated
+        kindModifiers: string | undefined; // see ScriptElementKindModifier, comma separated
         sortText: string;
         /**
          * An optional span that indicates the text to be replaced by this completion item. It will be
@@ -725,8 +725,8 @@ namespace ts {
         kind: ScriptElementKind;
         kindModifiers: string;   // see ScriptElementKindModifier, comma separated
         displayParts: SymbolDisplayPart[];
-        documentation: SymbolDisplayPart[];
-        tags: JSDocTagInfo[];
+        documentation: SymbolDisplayPart[] | undefined;
+        tags: JSDocTagInfo[] | undefined;
         codeActions?: CodeAction[];
         source?: SymbolDisplayPart[];
     }

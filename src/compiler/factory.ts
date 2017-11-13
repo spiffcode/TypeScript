@@ -1703,7 +1703,7 @@ namespace ts {
         modifiers: ReadonlyArray<Modifier> | undefined,
         name: string | Identifier | undefined,
         typeParameters: ReadonlyArray<TypeParameterDeclaration> | undefined,
-        heritageClauses: ReadonlyArray<HeritageClause>,
+        heritageClauses: ReadonlyArray<HeritageClause> | undefined,
         members: ReadonlyArray<ClassElement>) {
         const node = <ClassDeclaration>createSynthesizedNode(SyntaxKind.ClassDeclaration);
         node.decorators = asNodeArray(decorators);

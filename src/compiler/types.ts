@@ -4461,8 +4461,8 @@ namespace ts {
     }
 
     export interface TransformationContext {
-        /*@internal*/ getEmitResolver(): EmitResolver;
-        /*@internal*/ getEmitHost(): EmitHost;
+        /*@internal*/ getEmitResolver(): EmitResolver | undefined;
+        /*@internal*/ getEmitHost(): EmitHost | undefined;
 
         /** Gets the compiler options supplied to the transformer. */
         getCompilerOptions(): CompilerOptions;
