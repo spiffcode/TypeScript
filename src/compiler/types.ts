@@ -2825,8 +2825,8 @@ namespace ts {
         buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
         buildTypePredicateDisplay(predicate: TypePredicate, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
         buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildDisplayForParametersAndDelimiters(thisParameter: Symbol, parameters: Symbol[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildDisplayForTypeParametersAndDelimiters(typeParameters: TypeParameter[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildDisplayForParametersAndDelimiters(thisParameter: Symbol | undefined, parameters: Symbol[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildDisplayForTypeParametersAndDelimiters(typeParameters: TypeParameter[] | undefined, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
         buildReturnTypeDisplay(signature: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
     }
 
@@ -4628,7 +4628,7 @@ namespace ts {
          * });
          * ```
          */
-        onEmitNode?(hint: EmitHint, node: Node | undefined, emitCallback: (hint: EmitHint, node: Node) => void): void;
+        onEmitNode?(hint: EmitHint, node: Node | undefined, emitCallback: (hint: EmitHint, node: Node | undefined) => void): void;
         /**
          * A hook used by the Printer to perform just-in-time substitution of a node. This is
          * primarily used by node transformations that need to substitute one node for another,

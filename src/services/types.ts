@@ -18,8 +18,8 @@ namespace ts {
         getLeadingTriviaWidth(sourceFile?: SourceFile): number;
         getFullText(sourceFile?: SourceFile): string;
         getText(sourceFile?: SourceFile): string;
-        getFirstToken(sourceFile?: SourceFile): Node;
-        getLastToken(sourceFile?: SourceFile): Node;
+        getFirstToken(sourceFile?: SourceFile): Node | undefined;
+        getLastToken(sourceFile?: SourceFile): Node | undefined;
         // See ts.forEachChild for documentation.
         forEachChild<T>(cbNode: (node: Node) => T | undefined, cbNodeArray?: (nodes: NodeArray<Node>) => T | undefined): T | undefined;
     }
@@ -63,8 +63,8 @@ namespace ts {
 
     export interface SourceFile {
         /* @internal */ version: string;
-        /* @internal */ scriptSnapshot: IScriptSnapshot;
-        /* @internal */ nameTable: UnderscoreEscapedMap<number>;
+        /* @internal */ scriptSnapshot: IScriptSnapshot | undefined;
+        /* @internal */ nameTable: UnderscoreEscapedMap<number> | undefined;
 
         /* @internal */ getNamedDeclarations(): Map<Declaration[]>;
 
@@ -140,7 +140,7 @@ namespace ts {
         referencedFiles: FileReference[];
         typeReferenceDirectives: FileReference[];
         importedFiles: FileReference[];
-        ambientExternalModules: string[];
+        ambientExternalModules: string[] | undefined;
         isLibFile: boolean;
     }
 
@@ -644,14 +644,14 @@ namespace ts {
         kind: ScriptElementKind;
         kindModifiers: string;
         textSpan: TextSpan;
-        displayParts: SymbolDisplayPart[];
-        documentation: SymbolDisplayPart[];
-        tags: JSDocTagInfo[];
+        displayParts: SymbolDisplayPart[] | undefined;
+        documentation: SymbolDisplayPart[] | undefined;
+        tags: JSDocTagInfo[] | undefined;
     }
 
     export interface RenameInfo {
         canRename: boolean;
-        localizedErrorMessage: string;
+        localizedErrorMessage: string | undefined;
         displayName: string;
         fullDisplayName: string;
         kind: ScriptElementKind;

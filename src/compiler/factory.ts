@@ -894,7 +894,7 @@ namespace ts {
             : node;
     }
 
-    export function createCall(expression: Expression, typeArguments: ReadonlyArray<TypeNode> | undefined, argumentsArray: ReadonlyArray<Expression>) {
+    export function createCall(expression: Expression, typeArguments: ReadonlyArray<TypeNode> | undefined, argumentsArray: ReadonlyArray<Expression> | undefined) {
         const node = <CallExpression>createSynthesizedNode(SyntaxKind.CallExpression);
         node.expression = parenthesizeForAccess(expression);
         node.typeArguments = asNodeArray(typeArguments);
