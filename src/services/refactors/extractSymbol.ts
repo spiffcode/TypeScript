@@ -229,7 +229,9 @@ namespace ts.refactor.extractSymbol {
                 return { errors: [createFileDiagnostic(sourceFile, span.start, length, Messages.cannotExtractRange)] };
             }
             const statements: Statement[] = [];
-            for (const statement of (<BlockLike>start.parent).statements as any) {
+            // TODO: GH#18217 Need to alias `start` to get this to compile. See https://github.com/Microsoft/TypeScript/issues/19955#issuecomment-344118248
+            const start2 = start;
+            for (const statement of (<BlockLike>start2.parent).statements) {
                 if (statement === start || statements.length) {
                     const errors = checkNode(statement);
                     if (errors) {

@@ -88,7 +88,7 @@ namespace ts.formatting {
                 return SmartIndenter.findFirstNonWhitespaceColumn(lineStart, current, sourceFile, options);
             }
 
-            if (precedingToken.kind === SyntaxKind.CommaToken && precedingToken.parent.kind !== SyntaxKind.BinaryExpression) {
+            if (precedingToken.kind === SyntaxKind.CommaToken && precedingToken.parent!.kind !== SyntaxKind.BinaryExpression) {
                 // previous token is comma that separates items in list - find the previous item and try to derive indentation from it
                 const actualIndentation = getActualIndentationForListItemBeforeComma(precedingToken, sourceFile, options);
                 if (actualIndentation !== Value.Unknown) {
@@ -98,10 +98,10 @@ namespace ts.formatting {
 
             // try to find node that can contribute to indentation and includes 'position' starting from 'precedingToken'
             // if such node is found - compute initial indentation for 'position' inside this node
-            let previous: Node;
+            let previous: Node | undefined;
             let current = precedingToken;
-            let currentStart: LineAndCharacter;
-            let indentationDelta: number;
+            let currentStart: LineAndCharacter | undefined;
+            let indentationDelta: number | undefined;
 
             while (current) {
                 if (positionBelongsToNode(current, position, sourceFile) && shouldIndentChildNode(current, previous)) {
@@ -125,11 +125,11 @@ namespace ts.formatting {
                 }
                 actualIndentation = getLineIndentationWhenExpressionIsInMultiLine(current, sourceFile, options);
                 if (actualIndentation !== Value.Unknown) {
-                    return actualIndentation + options.indentSize;
+                    return actualIndentation + options.indentSize!; // TODO: GH#18217
                 }
 
                 previous = current;
-                current = current.parent;
+                current = current.parent!;
             }
 
             if (!current) {
@@ -137,7 +137,7 @@ namespace ts.formatting {
                 return getBaseIndentation(options);
             }
 
-            return getIndentationForNodeWorker(current, currentStart, /*ignoreActualIndentationRange*/ undefined, indentationDelta, sourceFile, options);
+            return getIndentationForNodeWorker(current, currentStart!, /*ignoreActualIndentationRange*/ undefined, indentationDelta!, sourceFile, options); // TODO: GH#18217
         }
 
         export function getIndentationForNode(n: Node, ignoreActualIndentationRange: TextRange, sourceFile: SourceFile, options: EditorSettings): number {
@@ -152,12 +152,12 @@ namespace ts.formatting {
         function getIndentationForNodeWorker(
             current: Node,
             currentStart: LineAndCharacter,
-            ignoreActualIndentationRange: TextRange,
+            ignoreActualIndentationRange: TextRange | undefined,
             indentationDelta: number,
             sourceFile: SourceFile,
             options: EditorSettings): number {
 
-            let parent: Node = current.parent;
+            let parent = current.parent!;
             let containingListOrParentStart: LineAndCharacter;
 
             // Walk up the tree and collect indentation for parent-child node pairs. Indentation is not added if
@@ -197,7 +197,7 @@ namespace ts.formatting {
 
                 // increase indentation if parent node wants its content to be indented and parent and child nodes don't start on the same line
                 if (shouldIndentChildNode(parent, current) && !parentAndChildShareLine) {
-                    indentationDelta += options.indentSize;
+                    indentationDelta += options.indentSize!; // TODO: GH#18217
                 }
 
                 // In our AST, a call argument's `parent` is the call-expression, not the argument list.
@@ -213,7 +213,7 @@ namespace ts.formatting {
                     isArgumentAndStartLineOverlapsExpressionBeingCalled(parent, current, currentStart.line, sourceFile);
 
                 current = parent;
-                parent = current.parent;
+                parent = current.parent!;
                 currentStart = useTrueStart ? sourceFile.getLineAndCharacterOfPosition(current.getStart()) : containingListOrParentStart;
             }
 
@@ -314,7 +314,7 @@ namespace ts.formatting {
 
         export function childStartsOnTheSameLineWithElseInIfStatement(parent: Node, child: TextRangeWithKind, childStartLine: number, sourceFile: SourceFileLike): boolean {
             if (parent.kind === SyntaxKind.IfStatement && (<IfStatement>parent).elseStatement === child) {
-                const elseKeyword = findChildOfKind(parent, SyntaxKind.ElseKeyword, sourceFile);
+                const elseKeyword = findChildOfKind(parent, SyntaxKind.ElseKeyword, sourceFile)!;
                 Debug.assert(elseKeyword !== undefined);
 
                 const elseKeywordStartLine = getStartLineAndCharacterForNode(elseKeyword, sourceFile).line;
@@ -328,11 +328,11 @@ namespace ts.formatting {
             return list && rangeContainsStartEnd(list, start, end) ? list : undefined;
         }
 
-        export function getContainingList(node: Node, sourceFile: SourceFile): NodeArray<Node> {
+        export function getContainingList(node: Node, sourceFile: SourceFile): NodeArray<Node> | undefined {
             if (node.parent) {
                 switch (node.parent.kind) {
                     case SyntaxKind.TypeReference:
-                        return getListIfStartEndIsInListRange((<TypeReferenceNode>node.parent).typeArguments, node.getStart(sourceFile), node.getEnd());
+                        return getListIfStartEndIsInListRange((<TypeReferenceNode>node.parent).typeArguments!, node.getStart(sourceFile), node.getEnd());
                     case SyntaxKind.ObjectLiteralExpression:
                         return (<ObjectLiteralExpression>node.parent).properties;
                     case SyntaxKind.ArrayLiteralExpression:
@@ -347,15 +347,15 @@ namespace ts.formatting {
                     case SyntaxKind.ConstructorType:
                     case SyntaxKind.ConstructSignature: {
                         const start = node.getStart(sourceFile);
-                        return getListIfStartEndIsInListRange((<SignatureDeclaration>node.parent).typeParameters, start, node.getEnd()) ||
+                        return getListIfStartEndIsInListRange((<SignatureDeclaration>node.parent).typeParameters!, start, node.getEnd()) ||
                             getListIfStartEndIsInListRange((<SignatureDeclaration>node.parent).parameters, start, node.getEnd());
                     }
                     case SyntaxKind.ClassDeclaration:
-                        return getListIfStartEndIsInListRange((<ClassDeclaration>node.parent).typeParameters, node.getStart(sourceFile), node.getEnd());
+                        return getListIfStartEndIsInListRange((<ClassDeclaration>node.parent).typeParameters!, node.getStart(sourceFile), node.getEnd());
                     case SyntaxKind.NewExpression:
                     case SyntaxKind.CallExpression: {
                         const start = node.getStart(sourceFile);
-                        return getListIfStartEndIsInListRange((<CallExpression>node.parent).typeArguments, start, node.getEnd()) ||
+                        return getListIfStartEndIsInListRange((<CallExpression>node.parent).typeArguments!, start, node.getEnd()) ||
                             getListIfStartEndIsInListRange((<CallExpression>node.parent).arguments, start, node.getEnd());
                     }
                     case SyntaxKind.VariableDeclarationList:
@@ -466,7 +466,7 @@ namespace ts.formatting {
                 }
 
                 if (ch === CharacterCodes.tab) {
-                    column += options.tabSize + (column % options.tabSize);
+                    column += options.tabSize! + (column % options.tabSize!); // TODO: GH#18217
                 }
                 else {
                     column++;
@@ -534,7 +534,7 @@ namespace ts.formatting {
         }
 
         /* @internal */
-        export function nodeWillIndentChild(parent: TextRangeWithKind, child: TextRangeWithKind, indentByDefault: boolean) {
+        export function nodeWillIndentChild(parent: TextRangeWithKind, child: TextRangeWithKind | undefined, indentByDefault: boolean): boolean {
             const childKind = child ? child.kind : SyntaxKind.Unknown;
             switch (parent.kind) {
                 case SyntaxKind.DoStatement:
@@ -555,7 +555,7 @@ namespace ts.formatting {
                     return childKind !== SyntaxKind.NamedExports;
                 case SyntaxKind.ImportDeclaration:
                     return childKind !== SyntaxKind.ImportClause ||
-                        ((<ImportClause>child).namedBindings && (<ImportClause>child).namedBindings.kind !== SyntaxKind.NamedImports);
+                        (!!(<ImportClause>child).namedBindings && (<ImportClause>child).namedBindings!.kind !== SyntaxKind.NamedImports);
                 case SyntaxKind.JsxElement:
                     return childKind !== SyntaxKind.JsxClosingElement;
             }

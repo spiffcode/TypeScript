@@ -208,7 +208,7 @@ namespace ts {
     }
 
     export function climbPastPropertyAccess(node: Node) {
-        return isRightSideOfPropertyAccess(node) ? node.parent : node;
+        return isRightSideOfPropertyAccess(node) ? node.parent! : node;
     }
 
     export function getTargetLabel(referenceNode: Node, labelName: string): Identifier | undefined {

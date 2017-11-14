@@ -335,7 +335,7 @@ namespace ts.NavigationBar {
             // We use 1 NavNode to represent 'A.B.C', but there are multiple source nodes.
             // Only merge module nodes that have the same chain. Don't merge 'A.B.C' with 'A'!
             function areSameModule(a: ModuleDeclaration, b: ModuleDeclaration): boolean {
-                if (a.body!.kind !== b.body.kind) { // TODO: GH#18217
+                if (a.body!.kind !== b.body!.kind) { // TODO: GH#18217
                     return false;
                 }
                 if (a.body!.kind !== SyntaxKind.ModuleDeclaration) {

@@ -191,8 +191,8 @@ namespace ts.OutliningElementsCollector {
                     // falls through
 
                 case SyntaxKind.ModuleBlock: {
-                    const openBrace = findChildOfKind(n, SyntaxKind.OpenBraceToken, sourceFile);
-                    const closeBrace = findChildOfKind(n, SyntaxKind.CloseBraceToken, sourceFile);
+                    const openBrace = findChildOfKind(n, SyntaxKind.OpenBraceToken, sourceFile)!;
+                    const closeBrace = findChildOfKind(n, SyntaxKind.CloseBraceToken, sourceFile)!;
                     addOutliningSpan(n.parent!, openBrace, closeBrace, autoCollapse(n), /*useFullStart*/ true);
                     break;
                 }
