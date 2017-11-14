@@ -792,7 +792,7 @@ namespace ts.formatting {
                     processTrivia(currentTokenInfo.leadingTrivia, parent, childContextNode, dynamicIndentation);
                 }
 
-                let lineAdded = false;
+                let lineAdded: boolean | undefined;
                 const isTokenInRange = rangeContainsRange(originalRange, currentTokenInfo.token);
 
                 const tokenStart = sourceFile.getLineAndCharacterOfPosition(currentTokenInfo.token.pos);
@@ -883,7 +883,7 @@ namespace ts.formatting {
             dynamicIndentation: DynamicIndentation): boolean {
 
             const rangeHasError = rangeContainsError(range);
-            let lineAdded = false;
+            let lineAdded: boolean | undefined;
             if (!rangeHasError) {
                 if (!previousRange) {
                     // trim whitespaces starting from the beginning of the span up to the current line
@@ -917,7 +917,7 @@ namespace ts.formatting {
             const rule = getRule(formattingContext);
 
             let trimTrailingWhitespaces: boolean;
-            let lineAdded = false;
+            let lineAdded: boolean | undefined;
             if (rule) {
                 applyRuleEdits(rule, previousItem, previousStartLine, currentItem, currentStartLine);
 

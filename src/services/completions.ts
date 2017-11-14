@@ -1438,8 +1438,8 @@ namespace ts.Completions {
                         }
                         // class c { method() { } b| }
                         if (isFromClassElementDeclaration(location) &&
-                            (parent as ClassElement).name === location) {
-                            return parent.parent as ClassLikeDeclaration;
+                            (location.parent as ClassElement).name === location) {
+                            return location.parent.parent as ClassLikeDeclaration;
                         }
                         break;
 
