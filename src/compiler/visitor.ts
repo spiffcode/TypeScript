@@ -292,14 +292,14 @@ namespace ts {
                     nodesVisitor((<MethodDeclaration>node).typeParameters, visitor, isTypeParameterDeclaration),
                     visitParameterList((<MethodDeclaration>node).parameters, visitor, context, nodesVisitor),
                     visitNode((<MethodDeclaration>node).type, visitor, isTypeNode),
-                    visitFunctionBody((<MethodDeclaration>node).body, visitor, context));
+                    visitFunctionBody((<MethodDeclaration>node).body!, visitor, context));
 
             case SyntaxKind.Constructor:
                 return updateConstructor(<ConstructorDeclaration>node,
                     nodesVisitor((<ConstructorDeclaration>node).decorators, visitor, isDecorator),
                     nodesVisitor((<ConstructorDeclaration>node).modifiers, visitor, isModifier),
                     visitParameterList((<ConstructorDeclaration>node).parameters, visitor, context, nodesVisitor),
-                    visitFunctionBody((<ConstructorDeclaration>node).body, visitor, context));
+                    visitFunctionBody((<ConstructorDeclaration>node).body!, visitor, context));
 
             case SyntaxKind.GetAccessor:
                 return updateGetAccessor(<GetAccessorDeclaration>node,
@@ -308,7 +308,7 @@ namespace ts {
                     visitNode((<GetAccessorDeclaration>node).name, visitor, isPropertyName),
                     visitParameterList((<GetAccessorDeclaration>node).parameters, visitor, context, nodesVisitor),
                     visitNode((<GetAccessorDeclaration>node).type, visitor, isTypeNode),
-                    visitFunctionBody((<GetAccessorDeclaration>node).body, visitor, context));
+                    visitFunctionBody((<GetAccessorDeclaration>node).body!, visitor, context));
 
             case SyntaxKind.SetAccessor:
                 return updateSetAccessor(<SetAccessorDeclaration>node,
@@ -316,7 +316,7 @@ namespace ts {
                     nodesVisitor((<SetAccessorDeclaration>node).modifiers, visitor, isModifier),
                     visitNode((<SetAccessorDeclaration>node).name, visitor, isPropertyName),
                     visitParameterList((<SetAccessorDeclaration>node).parameters, visitor, context, nodesVisitor),
-                    visitFunctionBody((<SetAccessorDeclaration>node).body, visitor, context));
+                    visitFunctionBody((<SetAccessorDeclaration>node).body!, visitor, context));
 
             case SyntaxKind.CallSignature:
                 return updateCallSignature(<CallSignatureDeclaration>node,

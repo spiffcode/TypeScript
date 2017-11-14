@@ -229,7 +229,7 @@ namespace ts.refactor.extractSymbol {
                 return { errors: [createFileDiagnostic(sourceFile, span.start, length, Messages.cannotExtractRange)] };
             }
             const statements: Statement[] = [];
-            for (const statement of (<BlockLike>start.parent).statements) {
+            for (const statement of (<BlockLike>start.parent).statements as any) {
                 if (statement === start || statements.length) {
                     const errors = checkNode(statement);
                     if (errors) {
@@ -256,7 +256,7 @@ namespace ts.refactor.extractSymbol {
         if (errors) {
             return { errors };
         }
-        return { targetRange: { range: getStatementOrExpressionRange(node), facts: rangeFacts, declarations } };
+        return { targetRange: { range: getStatementOrExpressionRange(node)!, facts: rangeFacts, declarations } }; // TODO: GH#18217
 
         /**
          * Attempt to refine the extraction node (generally, by shrinking it) to produce better results.
@@ -818,8 +818,8 @@ namespace ts.refactor.extractSymbol {
             changeTracker.insertNodeBefore(context.file, nodeToInsertBefore, newFunction, { suffix: context.newLineCharacter + context.newLineCharacter });
         }
         else {
-            changeTracker.insertNodeBefore(context.file, scope.getLastToken(), newFunction, {
-                prefix: isLineBreak(file.text.charCodeAt(scope.getLastToken().pos)) ? context.newLineCharacter : context.newLineCharacter + context.newLineCharacter,
+            changeTracker.insertNodeBefore(context.file, scope.getLastToken()!, newFunction, {
+                prefix: isLineBreak(file.text.charCodeAt(scope.getLastToken()!.pos)) ? context.newLineCharacter : context.newLineCharacter + context.newLineCharacter,
                 suffix: context.newLineCharacter
             });
         }

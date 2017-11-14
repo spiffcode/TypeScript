@@ -1534,17 +1534,17 @@ namespace ts {
         /// Goto definition
         function getDefinitionAtPosition(fileName: string, position: number): DefinitionInfo[] {
             synchronizeHostData();
-            return GoToDefinition.getDefinitionAtPosition(program, getValidSourceFile(fileName), position);
+            return GoToDefinition.getDefinitionAtPosition(program, getValidSourceFile(fileName), position)!; // TODO: GH#18217
         }
 
         function getDefinitionAndBoundSpan(fileName: string, position: number): DefinitionInfoAndBoundSpan {
             synchronizeHostData();
-            return GoToDefinition.getDefinitionAndBoundSpan(program, getValidSourceFile(fileName), position);
+            return GoToDefinition.getDefinitionAndBoundSpan(program, getValidSourceFile(fileName), position)!; // TODO: GH#18217
         }
 
         function getTypeDefinitionAtPosition(fileName: string, position: number): DefinitionInfo[] {
             synchronizeHostData();
-            return GoToDefinition.getTypeDefinitionAtPosition(program.getTypeChecker(), getValidSourceFile(fileName), position);
+            return GoToDefinition.getTypeDefinitionAtPosition(program.getTypeChecker(), getValidSourceFile(fileName), position)!; // TODO: GH#18217
         }
 
         /// Goto implementation

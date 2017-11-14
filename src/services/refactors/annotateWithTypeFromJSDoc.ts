@@ -173,7 +173,7 @@ namespace ts.refactor.annotateWithTypeFromJSDoc {
             case SyntaxKind.TypeReference:
                 return transformJSDocTypeReference(node as TypeReferenceNode);
             default:
-                const visited = visitEachChild(node, transformJSDocType, /*context*/ undefined) as TypeNode;
+                const visited = visitEachChild(node, transformJSDocType, /*context*/ undefined!) as TypeNode; // TODO: GH#18217
                 setEmitFlags(visited, EmitFlags.SingleLine);
                 return visited;
         }

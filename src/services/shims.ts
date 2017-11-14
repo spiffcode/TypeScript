@@ -296,11 +296,11 @@ namespace ts {
             return this.scriptSnapshotShim.getLength();
         }
 
-        public getChangeRange(oldSnapshot: IScriptSnapshot): TextChangeRange | null {
+        public getChangeRange(oldSnapshot: IScriptSnapshot): TextChangeRange | undefined {
             const oldSnapshotShim = <ScriptSnapshotShimAdapter>oldSnapshot;
             const encoded = this.scriptSnapshotShim.getChangeRange(oldSnapshotShim.scriptSnapshotShim);
             if (encoded === null) {
-                return null;
+                return null!; // TODO: GH#18217
             }
 
             const decoded: { span: { start: number; length: number; }; newLength: number; } = JSON.parse(encoded!); // TODO: GH#18217
@@ -401,7 +401,7 @@ namespace ts {
             return this.files = JSON.parse(encoded);
         }
 
-        public getScriptSnapshot(fileName: string): IScriptSnapshot {
+        public getScriptSnapshot(fileName: string): IScriptSnapshot | undefined {
             const scriptSnapshot = this.shimHost.getScriptSnapshot(fileName);
             return scriptSnapshot && new ScriptSnapshotShimAdapter(scriptSnapshot);
         }
