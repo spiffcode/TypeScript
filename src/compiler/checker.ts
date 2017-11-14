@@ -19936,7 +19936,7 @@ namespace ts {
             if (type.flags & TypeFlags.Union) {
                 let types: Type[] | undefined;
                 for (const constituentType of (<UnionType>type).types) {
-                    types = append(types, getAwaitedType(constituentType, errorNode, diagnosticMessage));
+                    types = append<Type>(types, getAwaitedType(constituentType, errorNode, diagnosticMessage));
                 }
 
                 if (!types) {
@@ -20321,7 +20321,7 @@ namespace ts {
 
                     case SyntaxKind.Parameter:
                         markDecoratorMedataDataTypeNodeAsReferenced(getParameterTypeNodeForDecoratorCheck(<ParameterDeclaration>node));
-                        const containingSignature = (node as ParameterDeclaration).parent;
+                        const containingSignature = (node as ParameterDeclaration).parent!;
                         for (const parameter of containingSignature.parameters) {
                             markDecoratorMedataDataTypeNodeAsReferenced(getParameterTypeNodeForDecoratorCheck(parameter));
                         }

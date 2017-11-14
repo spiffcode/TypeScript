@@ -654,9 +654,9 @@ namespace ts {
     }
 
     export function concatenate<T>(array1: T[] | undefined, array2: T[]): T[];
+    export function concatenate<T>(array1: T[] | undefined, array2: T[] | undefined): T[] | undefined;
     export function concatenate<T>(array1: ReadonlyArray<T> | undefined, array2: ReadonlyArray<T>): ReadonlyArray<T>;
     export function concatenate<T>(array1: ReadonlyArray<T>, array2: ReadonlyArray<T> | undefined): ReadonlyArray<T>;
-    export function concatenate<T>(array1: T[] | undefined, array2: T[] | undefined): T[] | undefined;
     export function concatenate<T>(array1: ReadonlyArray<T> | undefined, array2: ReadonlyArray<T> | undefined): ReadonlyArray<T> | undefined;
     export function concatenate<T>(array1: ReadonlyArray<T> | undefined, array2: ReadonlyArray<T> | undefined): ReadonlyArray<T> | undefined {
         if (!array2 || !array2.length) return array1;
@@ -867,6 +867,7 @@ namespace ts {
      * appended.
      */
     export function append<T>(to: T[], value: T | undefined): T[];
+    export function append<T>(to: T[] | undefined, value: T): T[];
     export function append<T>(to: T[] | undefined, value: T | undefined): T[] | undefined;
     export function append<T>(to: T[] | undefined, value: T | undefined): T[] | undefined {
         if (value === undefined) return to;

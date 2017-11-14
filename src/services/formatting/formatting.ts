@@ -876,11 +876,12 @@ namespace ts.formatting {
             }
         }
 
+        // TODO: GH#18217 use an enum instead of `boolean | undefined`
         function processRange(range: TextRangeWithKind,
             rangeStart: LineAndCharacter,
             parent: Node,
             contextNode: Node,
-            dynamicIndentation: DynamicIndentation): boolean {
+            dynamicIndentation: DynamicIndentation): boolean | undefined {
 
             const rangeHasError = rangeContainsError(range);
             let lineAdded: boolean | undefined;
@@ -910,7 +911,7 @@ namespace ts.formatting {
             previousStartLine: number,
             previousParent: Node,
             contextNode: Node,
-            dynamicIndentation: DynamicIndentation): boolean {
+            dynamicIndentation: DynamicIndentation): boolean | undefined {
 
             formattingContext.updateContext(previousItem, previousParent, currentItem, currentParent, contextNode);
 
@@ -954,7 +955,7 @@ namespace ts.formatting {
             return lineAdded;
         }
 
-        function insertIndentation(pos: number, indentation: number, lineAdded: boolean): void {
+        function insertIndentation(pos: number, indentation: number, lineAdded: boolean | undefined): void {
             const indentationString = getIndentationString(indentation, options);
             if (lineAdded) {
                 // new line is added before the token by the formatting rules

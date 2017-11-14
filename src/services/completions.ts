@@ -837,10 +837,10 @@ namespace ts.Completions {
         }
 
         function tryGetGlobalSymbols(): boolean {
-            let objectLikeContainer: ObjectLiteralExpression | BindingPattern;
-            let namedImportsOrExports: NamedImportsOrExports;
-            let classLikeContainer: ClassLikeDeclaration;
-            let jsxContainer: JsxOpeningLikeElement;
+            let objectLikeContainer: ObjectLiteralExpression | BindingPattern | undefined;
+            let namedImportsOrExports: NamedImportsOrExports | undefined;
+            let classLikeContainer: ClassLikeDeclaration | undefined;
+            let jsxContainer: JsxOpeningLikeElement | undefined;
 
             if (objectLikeContainer = tryGetObjectLikeCompletionContainer(contextToken!)) {
                 return tryGetObjectLikeCompletionSymbols(objectLikeContainer);
@@ -1439,7 +1439,7 @@ namespace ts.Completions {
                         // class c { method() { } b| }
                         if (isFromClassElementDeclaration(location) &&
                             (location.parent as ClassElement).name === location) {
-                            return location.parent.parent as ClassLikeDeclaration;
+                            return location.parent!.parent as ClassLikeDeclaration;
                         }
                         break;
 

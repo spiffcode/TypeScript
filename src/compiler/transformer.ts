@@ -109,8 +109,8 @@ namespace ts {
         // initialization.
         const context: TransformationContext = {
             getCompilerOptions: () => options,
-            getEmitResolver: () => resolver,
-            getEmitHost: () => host,
+            getEmitResolver: () => resolver!, // TODO: GH#18217
+            getEmitHost: () => host!, // TODO: GH#18217
             startLexicalEnvironment,
             suspendLexicalEnvironment,
             resumeLexicalEnvironment,

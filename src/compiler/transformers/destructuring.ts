@@ -284,7 +284,7 @@ namespace ts {
                     }
                     const rhsValue = createDestructuringPropertyAccess(flattenContext, value, propertyName);
                     if (isComputedPropertyName(propertyName)) {
-                        computedTempVariables = append(computedTempVariables, (rhsValue as ElementAccessExpression).argumentExpression);
+                        computedTempVariables = append<Expression>(computedTempVariables, (rhsValue as ElementAccessExpression).argumentExpression);
                     }
                     flattenBindingOrAssignmentElement(flattenContext, element, rhsValue, /*location*/ element);
                 }
