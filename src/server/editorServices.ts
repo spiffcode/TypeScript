@@ -502,6 +502,22 @@ namespace ts.server {
             return scriptInfo && scriptInfo.getDefaultProject();
         }
 
+        getSingleProject(): Project {
+            let count = this.configuredProjects.length + this.inferredProjects.length + this.externalProjects.length;
+            if (count > 1) {
+                return undefined;
+            }
+            if (this.configuredProjects.length > 0) {
+                return this.configuredProjects[0];
+            }
+            if (this.inferredProjects.length > 0) {
+                return this.inferredProjects[0];
+            }
+            if (this.externalProjects.length > 0) {
+                return this.externalProjects[0];
+            }
+        }
+
         private ensureInferredProjectsUpToDate() {
             if (this.changedFiles) {
                 let projectsToUpdate: Project[];

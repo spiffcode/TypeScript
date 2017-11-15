@@ -2053,5 +2053,31 @@ namespace ts.server {
                     "Error processing request. " + (<StackTraceError>err).message + "\n" + (<StackTraceError>err).stack);
             }
         }
+
+        public getCompilerOptions(fileName: string, projectFileName: string = undefined): ts.CompilerOptions {
+            const { project } = this.getFileAndProjectWorker(fileName, projectFileName, true, false);
+            return project.getCompilerOptions();
+        }
+
+        public getLanguageService(fileName: string, projectFileName: string = undefined): ts.LanguageService {
+            const { project } = this.getFileAndProjectWorker(fileName, projectFileName, true, false);
+            return project.getLanguageService();
+        }
+
+        public getGlobalCompilerOptions(): ts.CompilerOptions {
+            const project = this.projectService.getSingleProject();
+            if (project) {
+                return project.getCompilerOptions();
+            }
+            return undefined;
+        }
+
+        public getGlobalLanguageService(): ts.LanguageService {
+            const project = this.projectService.getSingleProject();
+            if (project) {
+                return project.getLanguageService();
+            }
+            return undefined;
+        }
     }
 }
