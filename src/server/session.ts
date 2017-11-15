@@ -2079,5 +2079,13 @@ namespace ts.server {
             }
             return undefined;
         }
+
+        public createInferredProject(fileNames: string[]) {
+            this.projectService.createInferredProjectWithRootFileNamesIfNecessary(fileNames);
+        }
+
+        public createConfiguredProject(configFileName: string) {
+            this.projectService.createConfiguredProjectIfNecessary(configFileName);
+        }
     }
 }

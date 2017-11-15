@@ -504,7 +504,7 @@ namespace ts.server {
 
         getSingleProject(): Project {
             let count = this.configuredProjects.length + this.inferredProjects.length + this.externalProjects.length;
-            if (count > 1) {
+            if (count !== 1) {
                 return undefined;
             }
             if (this.configuredProjects.length > 0) {
@@ -1330,6 +1330,50 @@ namespace ts.server {
                 this.inferredProjects.push(project);
             }
             return project;
+        }
+
+        createInferredProjectWithRootFileNamesIfNecessary(uncheckedFileNames: string[]) {
+            const useExistingProject = this.useSingleInferredProject && this.inferredProjects.length;
+            const project = useExistingProject ? this.inferredProjects[0] : new InferredProject(this, this.documentRegistry, this.compilerOptionsForInferredProjects);
+            for (const uncheckedFileName of uncheckedFileNames) {
+                const info = this.getOrCreateScriptInfo(uncheckedFileName, false);
+                project.addRoot(info);
+
+                this.directoryWatchers.startWatchingContainingDirectoriesForFile(info.fileName, project,
+                    fileName => this.onConfigFileAddedForInferredProject(fileName));
+            }
+
+            project.updateGraph();
+
+            if (!useExistingProject) {
+                this.inferredProjects.push(project);
+            }
+            return project;
+        }
+
+        createConfiguredProjectIfNecessary(uncheckedConfigFileName: string) {
+            const configFileName = toNormalizedPath(uncheckedConfigFileName);
+            this.logger.info(`Config file name: ${configFileName}`);
+
+            const project = this.findConfiguredProjectByProjectName(configFileName);
+            if (!project) {
+                const { success, errors } = this.openConfigFile(configFileName);
+                if (!success) {
+                    return { configFileName, configFileErrors: errors };
+                }
+
+                // even if opening config file was successful, it could still
+                // contain errors that were tolerated.
+                this.logger.info(`Opened configuration file ${configFileName}`);
+                if (errors && errors.length > 0) {
+                    return { configFileName, configFileErrors: errors };
+                }
+            }
+            else {
+                this.updateConfiguredProject(project);
+            }
+
+            return { configFileName };
         }
 
         /**
