@@ -502,7 +502,7 @@ namespace ts.server {
             return scriptInfo && scriptInfo.getDefaultProject();
         }
 
-        getSingleProject(): Project {
+        getGlobalProject(): Project {
             let count = this.configuredProjects.length + this.inferredProjects.length + this.externalProjects.length;
             if (count !== 1) {
                 return undefined;
@@ -515,6 +515,18 @@ namespace ts.server {
             }
             if (this.externalProjects.length > 0) {
                 return this.externalProjects[0];
+            }
+        }
+
+        closeGlobalProject(): void {
+            if (this.configuredProjects.length > 0) {
+                this.removeProject(this.configuredProjects[0]);
+            }
+            if (this.inferredProjects.length > 0) {
+                this.removeProject(this.inferredProjects[0]);
+            }
+            if (this.externalProjects.length > 0) {
+                this.removeProject(this.externalProjects[0]);
             }
         }
 

@@ -2065,7 +2065,7 @@ namespace ts.server {
         }
 
         public getGlobalCompilerOptions(): ts.CompilerOptions {
-            const project = this.projectService.getSingleProject();
+            const project = this.projectService.getGlobalProject();
             if (project) {
                 return project.getCompilerOptions();
             }
@@ -2073,7 +2073,7 @@ namespace ts.server {
         }
 
         public getGlobalLanguageService(): ts.LanguageService {
-            const project = this.projectService.getSingleProject();
+            const project = this.projectService.getGlobalProject();
             if (project) {
                 return project.getLanguageService();
             }
@@ -2086,6 +2086,10 @@ namespace ts.server {
 
         public createConfiguredProject(configFileName: string) {
             this.projectService.createConfiguredProjectIfNecessary(configFileName);
+        }
+
+        public closeGlobalProject() {
+            this.projectService.closeGlobalProject();
         }
     }
 }
