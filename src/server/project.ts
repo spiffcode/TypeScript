@@ -827,6 +827,7 @@ namespace ts.server {
             super.removeRoot(info);
         }
 
+/*
         getProjectRootPath() {
             // Single inferred project does not have a project root.
             if (this.projectService.useSingleInferredProject) {
@@ -834,6 +835,11 @@ namespace ts.server {
             }
             const rootFiles = this.getRootFiles();
             return getDirectoryPath(rootFiles[0]);
+        }
+*/
+        // For spiffcode, inferred projects have this root
+        getProjectRootPath() {
+            return '/';
         }
 
         close() {
