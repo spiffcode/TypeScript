@@ -362,8 +362,12 @@ namespace ts.server {
 
             const singleFileResult = scriptInfo.hasMixedContent ? [] : [scriptInfo.fileName];
             const fileInfo = this.getFileInfo(scriptInfo.path);
-            if (!fileInfo || !fileInfo.updateShapeSignature()) {
+            if (!fileInfo) {
                 return singleFileResult;
+            }
+
+            if (!fileInfo.updateShapeSignature()) {
+                return fileInfo.referencedBy.map(info => info.scriptInfo.fileName);
             }
 
             if (!fileInfo.isExternalModuleOrHasOnlyAmbientExternalModules()) {
