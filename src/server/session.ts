@@ -1654,8 +1654,8 @@ namespace ts.server {
                 return;
             }
 
-            // No need to analyze lib.d.ts
-            let fileNamesInProject = fileNames.filter(value => value.indexOf("lib.d.ts") < 0);
+            // No need to analyze standard libraries
+            let fileNamesInProject = fileNames.filter(value => value.indexOf("lib.d.ts") < 0 && value.indexOf("lib.es6.d.ts") < 0);
 
             // Sort the file name list to make the recently touched files come first
             const highPriorityFiles: NormalizedPath[] = [];
