@@ -1321,7 +1321,7 @@ namespace ts.server {
             }, []);
 
             if (checkList.length > 0) {
-                this.updateErrorCheck(next, checkList, this.changeSeq, (n) => n === this.changeSeq, delay);
+                this.updateErrorCheck(next, checkList, this.changeSeq, (n) => n === this.changeSeq, delay, 200, false);
             }
         }
 
