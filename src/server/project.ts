@@ -839,7 +839,7 @@ namespace ts.server {
 */
         // For spiffcode, inferred projects have this root
         getProjectRootPath() {
-            return '/';
+            return '';
         }
 
         close() {
@@ -1065,10 +1065,12 @@ namespace ts.server {
                 this.typeRootsWatchers = undefined;
             }
 
-            this.directoriesWatchedForWildcards.forEach(watcher => {
-                watcher.close();
-            });
-            this.directoriesWatchedForWildcards = undefined;
+            if (this.directoriesWatchedForWildcards) {
+                this.directoriesWatchedForWildcards.forEach(watcher => {
+                    watcher.close();
+                });
+                this.directoriesWatchedForWildcards = undefined;
+            }
 
             this.stopWatchingDirectory();
         }
