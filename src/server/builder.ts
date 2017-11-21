@@ -150,7 +150,7 @@ namespace ts.server {
             if (!emitSkipped) {
                 const projectRootPath = this.project.getProjectRootPath();
                 for (const outputFile of outputFiles) {
-                    const outputFileAbsoluteFileName = getNormalizedAbsolutePath(outputFile.name, projectRootPath ? projectRootPath : getDirectoryPath(scriptInfo.fileName));
+                    const outputFileAbsoluteFileName = getNormalizedAbsolutePath(outputFile.name, (projectRootPath || projectRootPath === '') ? projectRootPath : getDirectoryPath(scriptInfo.fileName));
                     writeFile(outputFileAbsoluteFileName, outputFile.text, outputFile.writeByteOrderMark);
                 }
             }
