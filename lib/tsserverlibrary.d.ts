@@ -54,7 +54,7 @@ declare namespace ts {
         pos: number;
         end: number;
     }
-    enum SyntaxKind {
+    const enum SyntaxKind {
         Unknown = 0,
         EndOfFileToken = 1,
         SingleLineCommentTrivia = 2,
@@ -387,7 +387,7 @@ declare namespace ts {
         FirstJSDocTagNode = 284,
         LastJSDocTagNode = 294,
     }
-    enum NodeFlags {
+    const enum NodeFlags {
         None = 0,
         Let = 1,
         Const = 2,
@@ -414,7 +414,7 @@ declare namespace ts {
         ContextFlags = 96256,
         TypeExcludesFlags = 20480,
     }
-    enum ModifierFlags {
+    const enum ModifierFlags {
         None = 0,
         Export = 1,
         Ambient = 2,
@@ -434,7 +434,7 @@ declare namespace ts {
         TypeScriptModifier = 2270,
         ExportDefault = 513,
     }
-    enum JsxFlags {
+    const enum JsxFlags {
         None = 0,
         IntrinsicNamedElement = 1,
         IntrinsicIndexedElement = 2,
@@ -1486,7 +1486,7 @@ declare namespace ts {
         name: Identifier;
         isBracketed: boolean;
     }
-    enum FlowFlags {
+    const enum FlowFlags {
         Unreachable = 1,
         Start = 2,
         BranchLabel = 4,
@@ -1733,7 +1733,7 @@ declare namespace ts {
         reportInaccessibleThisError(): void;
         reportPrivateInBaseOfClassExpression(propertyName: string): void;
     }
-    enum TypeFormatFlags {
+    const enum TypeFormatFlags {
         None = 0,
         WriteArrayAsGenericType = 1,
         UseTypeOfFunction = 4,
@@ -1750,12 +1750,12 @@ declare namespace ts {
         AddUndefined = 8192,
         WriteClassExpressionAsTypeLiteral = 16384,
     }
-    enum SymbolFormatFlags {
+    const enum SymbolFormatFlags {
         None = 0,
         WriteTypeParametersOrArguments = 1,
         UseOnlyExternalAliasing = 2,
     }
-    enum TypePredicateKind {
+    const enum TypePredicateKind {
         This = 0,
         Identifier = 1,
     }
@@ -1772,7 +1772,7 @@ declare namespace ts {
         parameterIndex: number;
     }
     type TypePredicate = IdentifierTypePredicate | ThisTypePredicate;
-    enum SymbolFlags {
+    const enum SymbolFlags {
         None = 0,
         FunctionScopedVariable = 1,
         BlockScopedVariable = 2,
@@ -1846,7 +1846,7 @@ declare namespace ts {
         globalExports?: SymbolTable;
     }
     type SymbolTable = Map<Symbol>;
-    enum TypeFlags {
+    const enum TypeFlags {
         Any = 1,
         String = 2,
         Number = 4,
@@ -1903,7 +1903,7 @@ declare namespace ts {
     }
     interface EnumType extends Type {
     }
-    enum ObjectFlags {
+    const enum ObjectFlags {
         Class = 1,
         Interface = 2,
         Reference = 4,
@@ -1965,7 +1965,7 @@ declare namespace ts {
     interface IndexType extends Type {
         type: TypeVariable | UnionOrIntersectionType;
     }
-    enum SignatureKind {
+    const enum SignatureKind {
         Call = 0,
         Construct = 1,
     }
@@ -1974,7 +1974,7 @@ declare namespace ts {
         typeParameters?: TypeParameter[];
         parameters: Symbol[];
     }
-    enum IndexKind {
+    const enum IndexKind {
         String = 0,
         Number = 1,
     }
@@ -1983,7 +1983,7 @@ declare namespace ts {
         isReadonly: boolean;
         declaration?: SignatureDeclaration;
     }
-    enum InferencePriority {
+    const enum InferencePriority {
         NakedTypeVariable = 1,
         MappedType = 2,
         ReturnType = 4,
@@ -1996,7 +1996,7 @@ declare namespace ts {
         topLevel: boolean;
         isFixed: boolean;
     }
-    enum InferenceFlags {
+    const enum InferenceFlags {
         InferUnionTypes = 1,
         NoDefault = 2,
         AnyDefault = 4,
@@ -2132,13 +2132,13 @@ declare namespace ts {
         ES2015 = 5,
         ESNext = 6,
     }
-    enum JsxEmit {
+    const enum JsxEmit {
         None = 0,
         Preserve = 1,
         React = 2,
         ReactNative = 3,
     }
-    enum NewLineKind {
+    const enum NewLineKind {
         CarriageReturnLineFeed = 0,
         LineFeed = 1,
     }
@@ -2146,7 +2146,7 @@ declare namespace ts {
         line: number;
         character: number;
     }
-    enum ScriptKind {
+    const enum ScriptKind {
         Unknown = 0,
         JS = 1,
         JSX = 2,
@@ -2154,7 +2154,7 @@ declare namespace ts {
         TSX = 4,
         External = 5,
     }
-    enum ScriptTarget {
+    const enum ScriptTarget {
         ES3 = 0,
         ES5 = 1,
         ES2015 = 2,
@@ -2163,7 +2163,7 @@ declare namespace ts {
         ESNext = 5,
         Latest = 5,
     }
-    enum LanguageVariant {
+    const enum LanguageVariant {
         Standard = 0,
         JSX = 1,
     }
@@ -2176,7 +2176,7 @@ declare namespace ts {
         wildcardDirectories?: MapLike<WatchDirectoryFlags>;
         compileOnSave?: boolean;
     }
-    enum WatchDirectoryFlags {
+    const enum WatchDirectoryFlags {
         None = 0,
         Recursive = 1,
     }
@@ -2243,7 +2243,7 @@ declare namespace ts {
         text: string;
         skipTrivia?: (pos: number) => number;
     }
-    enum EmitFlags {
+    const enum EmitFlags {
         SingleLine = 1,
         AdviseOnEmitNode = 2,
         NoSubstitution = 4,
@@ -2279,7 +2279,7 @@ declare namespace ts {
         readonly text: string;
         readonly priority?: number;
     }
-    enum EmitHint {
+    const enum EmitHint {
         SourceFile = 0,
         Expression = 1,
         IdentifierName = 2,
@@ -3489,7 +3489,7 @@ declare namespace ts {
         outputFiles: OutputFile[];
         emitSkipped: boolean;
     }
-    enum OutputFileType {
+    const enum OutputFileType {
         JavaScript = 0,
         SourceMap = 1,
         Declaration = 2,
@@ -3499,7 +3499,7 @@ declare namespace ts {
         writeByteOrderMark: boolean;
         text: string;
     }
-    enum EndOfLineState {
+    const enum EndOfLineState {
         None = 0,
         InMultiLineCommentTrivia = 1,
         InSingleQuoteStringLiteral = 2,
@@ -3601,7 +3601,7 @@ declare namespace ts {
         static jsxText: string;
         static jsxAttributeStringLiteralValue: string;
     }
-    enum ClassificationType {
+    const enum ClassificationType {
         comment = 1,
         identifier = 2,
         keyword = 3,
@@ -4923,6 +4923,13 @@ declare namespace ts.server {
             responseRequired?: boolean;
         };
         onMessage(message: string): void;
+        getCompilerOptions(fileName: string, projectFileName?: string): ts.CompilerOptions;
+        getLanguageService(fileName: string, projectFileName?: string): ts.LanguageService;
+        getGlobalCompilerOptions(): ts.CompilerOptions;
+        getGlobalLanguageService(): ts.LanguageService;
+        createInferredProject(fileNames: string[]): void;
+        createConfiguredProject(configFileName: string): void;
+        closeGlobalProject(): void;
     }
 }
 declare namespace ts.server {
@@ -5469,6 +5476,8 @@ declare namespace ts.server {
         stopWatchingDirectory(directory: string): void;
         findProject(projectName: string): Project;
         getDefaultProjectForFile(fileName: NormalizedPath, refreshInferredProjects: boolean): Project;
+        getGlobalProject(): Project;
+        closeGlobalProject(): void;
         private ensureInferredProjectsUpToDate();
         private findContainingExternalProject(fileName);
         getFormatCodeOptions(file?: NormalizedPath): FormatCodeSettings;
@@ -5502,6 +5511,13 @@ declare namespace ts.server {
         private updateNonInferredProject<T>(project, newUncheckedFiles, propertyReader, newOptions, newTypeAcquisition, compileOnSave, configFileErrors);
         private updateConfiguredProject(project);
         createInferredProjectWithRootFileIfNecessary(root: ScriptInfo): InferredProject;
+        createInferredProjectWithRootFileNamesIfNecessary(uncheckedFileNames: string[]): InferredProject;
+        createConfiguredProjectIfNecessary(uncheckedConfigFileName: string): {
+            configFileName: NormalizedPath;
+            configFileErrors: Diagnostic[];
+        } | {
+            configFileName: NormalizedPath;
+        };
         getOrCreateScriptInfo(uncheckedFileName: string, openedByClient: boolean, fileContent?: string, scriptKind?: ScriptKind): ScriptInfo;
         getScriptInfo(uncheckedFileName: string): ScriptInfo;
         watchClosedScriptInfo(info: ScriptInfo): void;
