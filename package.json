@@ -1,8 +1,8 @@
 {
-    "name": "typescript",
+    "name": "spiffcode-typescript",
     "author": "Microsoft Corp.",
     "homepage": "http://typescriptlang.org/",
-    "version": "2.4.2",
+    "version": "2.4.2-alpha.1",
     "license": "Apache-2.0",
     "description": "TypeScript is a language for application scale JavaScript development",
     "keywords": [
@@ -12,15 +12,12 @@
         "language",
         "javascript"
     ],
-    "bugs": {
-        "url": "https://github.com/Microsoft/TypeScript/issues"
-    },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Microsoft/TypeScript.git"
+        "url": "https://github.com/spiffcode/TypeScript.git"
     },
-    "main": "./lib/typescript.js",
-    "typings": "./lib/typescript.d.ts",
+    "main": "./lib/tsserverlibrary.js",
+    "typings": "./lib/tsserverlibrary.d.ts",
     "bin": {
         "tsc": "./bin/tsc",
         "tsserver": "./bin/tsserver"
