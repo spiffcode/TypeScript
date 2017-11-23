@@ -3842,7 +3842,6 @@ declare namespace ts.server {
     function isInferredProjectName(name: string): boolean;
     function makeInferredProjectName(counter: number): string;
     function toSortedReadonlyArray(arr: string[]): SortedReadonlyArray<string>;
-    function enumerateInsertsAndDeletes<T>(a: SortedReadonlyArray<T>, b: SortedReadonlyArray<T>, inserted: (item: T) => void, deleted: (item: T) => void, compare?: (a: T, b: T) => Comparison): void;
     class ThrottledOperations {
         private readonly host;
         private pendingTimeouts;
