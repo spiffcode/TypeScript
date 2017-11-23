@@ -195,6 +195,7 @@ namespace ts.server {
         return <any>arr;
     }
 
+    /* @internal */
     export function enumerateInsertsAndDeletes<T>(a: SortedReadonlyArray<T>, b: SortedReadonlyArray<T>, inserted: (item: T) => void, deleted: (item: T) => void, compare?: (a: T, b: T) => Comparison) {
         compare = compare || ts.compareValues;
         let aIndex = 0;
