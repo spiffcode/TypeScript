@@ -182,7 +182,7 @@ namespace ts {
         let resolved = primaryLookup();
         let primary = true;
         if (!resolved) {
-            resolved = secondaryLookup();
+            resolved = secondaryLookup(['node_modules', 'libs']);
             primary = false;
         }
 
@@ -222,25 +222,29 @@ namespace ts {
             }
         }
 
-        function secondaryLookup(): string | undefined {
+        function secondaryLookup(dirs: string[]): string | undefined {
             let resolvedFile: string;
             const initialLocationForSecondaryLookup = containingFile && getDirectoryPath(containingFile);
 
-            if (initialLocationForSecondaryLookup !== undefined) {
-                // check secondary locations
-                if (traceEnabled) {
-                    trace(host, Diagnostics.Looking_up_in_node_modules_folder_initial_location_0, initialLocationForSecondaryLookup);
+            for (const dir of dirs) {
+                if (initialLocationForSecondaryLookup !== undefined) {
+                    // check secondary locations
+                    if (traceEnabled) {
+                        host.trace(`Looking up in ${dir} folder, initial location ${initialLocationForSecondaryLookup}.`);
+                    }
+                    const result = loadModuleFromDir(dir, Extensions.DtsOnly, typeReferenceDirectiveName, initialLocationForSecondaryLookup, failedLookupLocations, moduleResolutionState, /*cache*/ undefined);
+                    resolvedFile = resolvedTypeScriptOnly(result && result.value);
+                    if (!resolvedFile && traceEnabled) {
+                        host.trace(`======== Type reference directive ${typeReferenceDirectiveName} was not resolved. ========`);
+                    }
+                    if (resolvedFile) {
+                        return resolvedFile;
+                    }
                 }
-                const result = loadModuleFromNodeModules(Extensions.DtsOnly, typeReferenceDirectiveName, initialLocationForSecondaryLookup, failedLookupLocations, moduleResolutionState, /*cache*/ undefined);
-                resolvedFile = resolvedTypeScriptOnly(result && result.value);
-                if (!resolvedFile && traceEnabled) {
-                    trace(host, Diagnostics.Type_reference_directive_0_was_not_resolved, typeReferenceDirectiveName);
-                }
-                return resolvedFile;
-            }
-            else {
-                if (traceEnabled) {
-                    trace(host, Diagnostics.Containing_file_is_not_specified_and_root_directory_cannot_be_determined_skipping_lookup_in_node_modules_folder);
+                else {
+                    if (traceEnabled) {
+                        host.trace(`Containing file is not specified and root directory cannot be determined, skipping lookup in ${dir} folder.`);
+                    }
                 }
             }
         }
@@ -719,7 +723,7 @@ namespace ts {
                 if (traceEnabled) {
                     trace(host, Diagnostics.Loading_module_0_from_node_modules_folder_target_file_type_1, moduleName, Extensions[extensions]);
                 }
-                const resolved = loadModuleFromNodeModules(extensions, moduleName, containingDirectory, failedLookupLocations, state, cache);
+                const resolved = loadModuleFromDir('node_modules', extensions, moduleName, containingDirectory, failedLookupLocations, state, cache);
                 // For node_modules lookups, get the real path so that multiple accesses to an `npm link`-ed module do not create duplicate files.
                 return resolved && { value: resolved.value && { resolved: { path: realpath(resolved.value.path, host, traceEnabled), extension: resolved.value.extension }, isExternalLibraryImport: true } };
             }
@@ -920,56 +924,56 @@ namespace ts {
         return combinePaths(directory, "package.json");
     }
 
-    function loadModuleFromNodeModulesFolder(extensions: Extensions, moduleName: string, nodeModulesFolder: string, nodeModulesFolderExists: boolean, failedLookupLocations: Push<string>, state: ModuleResolutionState): Resolved | undefined {
-        const candidate = normalizePath(combinePaths(nodeModulesFolder, moduleName));
+    function loadModuleFromFolder(extensions: Extensions, moduleName: string, modulesFolder: string, modulesFolderExists: boolean, failedLookupLocations: Push<string>, state: ModuleResolutionState): Resolved | undefined {
+        const candidate = normalizePath(combinePaths(modulesFolder, moduleName));
 
-        return loadModuleFromFile(extensions, candidate, failedLookupLocations, !nodeModulesFolderExists, state) ||
-            loadNodeModuleFromDirectory(extensions, candidate, failedLookupLocations, !nodeModulesFolderExists, state);
+        return loadModuleFromFile(extensions, candidate, failedLookupLocations, !modulesFolderExists, state) ||
+            loadNodeModuleFromDirectory(extensions, candidate, failedLookupLocations, !modulesFolderExists, state);
     }
 
-    function loadModuleFromNodeModules(extensions: Extensions, moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState, cache: NonRelativeModuleNameResolutionCache): SearchResult<Resolved> {
-        return loadModuleFromNodeModulesWorker(extensions, moduleName, directory, failedLookupLocations, state, /*typesOnly*/ false, cache);
+    function loadModuleFromDir(dir: string, extensions: Extensions, moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState, cache: NonRelativeModuleNameResolutionCache): SearchResult<Resolved> {
+        return loadModuleFromDirWorker(dir, extensions, moduleName, directory, failedLookupLocations, state, /*typesOnly*/ false, cache);
     }
-    function loadModuleFromNodeModulesAtTypes(moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState): SearchResult<Resolved> {
+    function loadModuleFromDirAtTypes(dir: string, moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState): SearchResult<Resolved> {
         // Extensions parameter here doesn't actually matter, because typesOnly ensures we're just doing @types lookup, which is always DtsOnly.
-        return loadModuleFromNodeModulesWorker(Extensions.DtsOnly, moduleName, directory, failedLookupLocations, state, /*typesOnly*/ true, /*cache*/ undefined);
+        return loadModuleFromDirWorker(dir, Extensions.DtsOnly, moduleName, directory, failedLookupLocations, state, /*typesOnly*/ true, /*cache*/ undefined);
     }
 
-    function loadModuleFromNodeModulesWorker(extensions: Extensions, moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState, typesOnly: boolean, cache: NonRelativeModuleNameResolutionCache): SearchResult<Resolved> {
+    function loadModuleFromDirWorker(dir: string, extensions: Extensions, moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState, typesOnly: boolean, cache: NonRelativeModuleNameResolutionCache): SearchResult<Resolved> {
         const perModuleNameCache = cache && cache.getOrCreateCacheForModuleName(moduleName);
         return forEachAncestorDirectory(normalizeSlashes(directory), ancestorDirectory => {
-            if (getBaseFileName(ancestorDirectory) !== "node_modules") {
+            if (getBaseFileName(ancestorDirectory) !== dir) {
                 const resolutionFromCache = tryFindNonRelativeModuleNameInCache(perModuleNameCache, moduleName, ancestorDirectory, state.traceEnabled, state.host);
                 if (resolutionFromCache) {
                     return resolutionFromCache;
                 }
-                return toSearchResult(loadModuleFromNodeModulesOneLevel(extensions, moduleName, ancestorDirectory, failedLookupLocations, state, typesOnly));
+                return toSearchResult(loadModuleFromDirOneLevel(dir, extensions, moduleName, ancestorDirectory, failedLookupLocations, state, typesOnly));
             }
         });
     }
 
     /** Load a module from a single node_modules directory, but not from any ancestors' node_modules directories. */
-    function loadModuleFromNodeModulesOneLevel(extensions: Extensions, moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState, typesOnly = false): Resolved | undefined {
-        const nodeModulesFolder = combinePaths(directory, "node_modules");
-        const nodeModulesFolderExists = directoryProbablyExists(nodeModulesFolder, state.host);
-        if (!nodeModulesFolderExists && state.traceEnabled) {
-            trace(state.host, Diagnostics.Directory_0_does_not_exist_skipping_all_lookups_in_it, nodeModulesFolder);
+    function loadModuleFromDirOneLevel(dir: string, extensions: Extensions, moduleName: string, directory: string, failedLookupLocations: Push<string>, state: ModuleResolutionState, typesOnly = false): Resolved | undefined {
+        const modulesFolder = combinePaths(directory, dir);
+        const modulesFolderExists = directoryProbablyExists(modulesFolder, state.host);
+        if (!modulesFolderExists && state.traceEnabled) {
+            trace(state.host, Diagnostics.Directory_0_does_not_exist_skipping_all_lookups_in_it, modulesFolder);
         }
 
-        const packageResult = typesOnly ? undefined : loadModuleFromNodeModulesFolder(extensions, moduleName, nodeModulesFolder, nodeModulesFolderExists, failedLookupLocations, state);
+        const packageResult = typesOnly ? undefined : loadModuleFromFolder(extensions, moduleName, modulesFolder, modulesFolderExists, failedLookupLocations, state);
         if (packageResult) {
             return packageResult;
         }
         if (extensions !== Extensions.JavaScript) {
-            const nodeModulesAtTypes = combinePaths(nodeModulesFolder, "@types");
-            let nodeModulesAtTypesExists = nodeModulesFolderExists;
-            if (nodeModulesFolderExists && !directoryProbablyExists(nodeModulesAtTypes, state.host)) {
+            const nodeModulesAtTypes = combinePaths(modulesFolder, "@types");
+            let nodeModulesAtTypesExists = modulesFolderExists;
+            if (modulesFolderExists && !directoryProbablyExists(nodeModulesAtTypes, state.host)) {
                 if (state.traceEnabled) {
                     trace(state.host, Diagnostics.Directory_0_does_not_exist_skipping_all_lookups_in_it, nodeModulesAtTypes);
                 }
                 nodeModulesAtTypesExists = false;
             }
-            return loadModuleFromNodeModulesFolder(Extensions.DtsOnly, mangleScopedPackage(moduleName, state), nodeModulesAtTypes, nodeModulesAtTypesExists, failedLookupLocations, state);
+            return loadModuleFromFolder(Extensions.DtsOnly, mangleScopedPackage(moduleName, state), nodeModulesAtTypes, nodeModulesAtTypesExists, failedLookupLocations, state);
         }
     }
 
@@ -1043,7 +1047,7 @@ namespace ts {
                 }
                 if (extensions === Extensions.TypeScript) {
                     // If we didn't find the file normally, look it up in @types.
-                    return loadModuleFromNodeModulesAtTypes(moduleName, containingDirectory, failedLookupLocations, state);
+                    return loadModuleFromDirAtTypes('node_modules', moduleName, containingDirectory, failedLookupLocations, state);
                 }
             }
             else {
@@ -1065,7 +1069,7 @@ namespace ts {
         }
         const state: ModuleResolutionState = { compilerOptions, host, traceEnabled };
         const failedLookupLocations: string[] = [];
-        const resolved = loadModuleFromNodeModulesOneLevel(Extensions.DtsOnly, moduleName, globalCache, failedLookupLocations, state);
+        const resolved = loadModuleFromDirOneLevel('node_modules', Extensions.DtsOnly, moduleName, globalCache, failedLookupLocations, state);
         return createResolvedModuleWithFailedLookupLocations(resolved, /*isExternalLibraryImport*/ true, failedLookupLocations);
     }
 
