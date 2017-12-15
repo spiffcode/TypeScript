@@ -528,6 +528,11 @@ namespace ts.server {
             if (this.externalProjects.length > 0) {
                 this.removeProject(this.externalProjects[0]);
             }
+            for (const path of this.filenameToScriptInfo.getKeys()) {
+                const info = this.filenameToScriptInfo.get(path);
+                info.stopWatcher();
+                this.filenameToScriptInfo.remove(info.path);
+            }
         }
 
         private ensureInferredProjectsUpToDate() {
