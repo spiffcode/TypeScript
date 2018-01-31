@@ -1957,16 +1957,18 @@ namespace ts {
             function verifyEmitFilePath(emitFileName: string, emitFilesSeen: FileMap<boolean>) {
                 if (emitFileName) {
                     const emitFilePath = toPath(emitFileName, currentDirectory, getCanonicalFileName);
+/* spiffcode does not have this case
                     // Report error if the output overwrites input file
                     if (filesByName.contains(emitFilePath)) {
                         let chain: DiagnosticMessageChain;
                         if (!options.configFilePath) {
                             // The program is from either an inferred project or an external project
-                            chain = chainDiagnosticMessages(/*details*/ undefined, Diagnostics.Adding_a_tsconfig_json_file_will_help_organize_projects_that_contain_both_TypeScript_and_JavaScript_files_Learn_more_at_https_Colon_Slash_Slashaka_ms_Slashtsconfig);
+                            chain = chainDiagnosticMessages(undefined, Diagnostics.Adding_a_tsconfig_json_file_will_help_organize_projects_that_contain_both_TypeScript_and_JavaScript_files_Learn_more_at_https_Colon_Slash_Slashaka_ms_Slashtsconfig);
                         }
                         chain = chainDiagnosticMessages(chain, Diagnostics.Cannot_write_file_0_because_it_would_overwrite_input_file, emitFileName);
                         blockEmittingOfFile(emitFileName, createCompilerDiagnosticFromMessageChain(chain));
                     }
+*/
 
                     // Report error if multiple files write into same file
                     if (emitFilesSeen.contains(emitFilePath)) {
