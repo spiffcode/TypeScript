@@ -678,7 +678,11 @@ namespace ts.server {
         }
 
         private handleChangeInSourceFileForConfiguredProject(project: ConfiguredProject, triggerFile: string) {
-            const { projectOptions, configFileErrors } = this.convertConfigFileContentToProjectOptions(project.getConfigFilePath());
+            const result = this.convertConfigFileContentToProjectOptions(project.getConfigFilePath());
+            if (!result.success) {
+                return;
+            }
+            const { projectOptions, configFileErrors } = result;
             this.reportConfigFileDiagnostics(project.getProjectName(), configFileErrors, triggerFile);
 
             const newRootFiles = projectOptions.files.map((f => this.getCanonicalFileName(f)));
