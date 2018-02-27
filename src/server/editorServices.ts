@@ -678,6 +678,10 @@ namespace ts.server {
         }
 
         private handleChangeInSourceFileForConfiguredProject(project: ConfiguredProject, triggerFile: string) {
+            // This is called after a 250ms timer, and the project may have been closed in this timeframe.
+            if (!project.getRootFiles()) {
+                return;
+            }
             const result = this.convertConfigFileContentToProjectOptions(project.getConfigFilePath());
             if (!result.success) {
                 return;
